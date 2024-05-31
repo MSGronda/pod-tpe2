@@ -59,4 +59,9 @@ public class TicketNYC extends Ticket implements DataSerializable {
     public String getInfractionCode() {
         return String.valueOf(infractionCode);
     }
+
+    @Override
+    public String getCounty(){
+        return countyName;
+    }
 }

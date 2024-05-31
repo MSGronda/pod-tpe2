@@ -52,4 +52,9 @@ public class TicketCHI extends Ticket implements DataSerializable{
     public String getInfractionCode(){
         return violationCode;
     }
+
+    @Override
+    public String getCounty() {
+        return communityArea;
+    }
 }
