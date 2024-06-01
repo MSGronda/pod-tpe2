@@ -57,4 +57,14 @@ public class TicketCHI extends Ticket implements DataSerializable{
     public String getCounty() {
         return communityArea;
     }
+
+    @Override
+    public String getAgency(){
+        return unitDescription;
+    }
+
+    @Override
+    public float getFineAmount() {
+        return fine;
+    }
 }

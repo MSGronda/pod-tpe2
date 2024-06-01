@@ -61,7 +61,14 @@ public class TicketNYC extends Ticket implements DataSerializable {
     }
 
     @Override
-    public String getCounty(){
+    public String getCounty() {
         return countyName;
+    }
+    public String getAgency(){
+        return issuingAgency;
+    }
+    @Override
+    public float getFineAmount() {
+        return fineAmount;
     }
 }
