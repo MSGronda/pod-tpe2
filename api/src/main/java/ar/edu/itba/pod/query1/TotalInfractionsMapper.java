@@ -9,13 +9,17 @@ import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
 
-public class TotalInfractionsMapper implements Mapper<Integer, Ticket, String, Long>, HazelcastInstanceAware {
+public class TotalInfractionsMapper implements Mapper<Long, Ticket, String, Long>, HazelcastInstanceAware {
     private static final Long ONE = 1L;
 
     private IMap<String, Infraction> infractions;
 
+    public TotalInfractionsMapper(){
+
+    }
+
     @Override
-    public void map(Integer i, Ticket t, Context<String, Long> context) {
+    public void map(Long i, Ticket t, Context<String, Long> context) {
         context.emit(infractions.get(t.getInfractionCode()).getDescription(), ONE);
     }
 

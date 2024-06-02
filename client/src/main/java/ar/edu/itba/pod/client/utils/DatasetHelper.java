@@ -8,12 +8,14 @@ import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import com.hazelcast.core.IList;
 import com.hazelcast.core.IMap;
+import com.hazelcast.core.MultiMap;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -26,7 +28,7 @@ public class DatasetHelper {
             IMap<String, Infraction> infractions,
             CsvReaderType infractionsReaderType,
             String ticketsPath,
-            IList<Ticket> tickets,
+            MultiMap<Long, Ticket> tickets,
             CsvReaderType ticketReaderType
     ){
         infractionsReaderType.reader.readCsv(infractionsPath, line -> {
@@ -39,16 +41,23 @@ public class DatasetHelper {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+
         ticketReaderType.reader.readCsv(ticketsPath, line -> {
+
             String[] fields = line.split(";");
-            tickets.add(new TicketNYC(
-                    fields[0],
-                    LocalDate.parse(fields[1], dateFormatter),
-                    Integer.parseInt(fields[2]),
-                    Float.parseFloat(fields[3]),
-                    fields[4],
-                    fields[5]
-            ));
+
+            LocalDate date = LocalDate.parse(fields[1], dateFormatter);
+
+            tickets.put(
+                    date.toEpochDay(),
+                    new TicketNYC(
+                        fields[0],
+                        date,
+                        Integer.parseInt(fields[2]),
+                        Float.parseFloat(fields[3]),
+                        fields[4],
+                        fields[5])
+            );
         });
     }
 
@@ -57,7 +66,7 @@ public class DatasetHelper {
            IMap<String, Infraction> infractions,
            CsvReaderType infractionsReaderType,
            String ticketsPath,
-           IList<Ticket> tickets,
+            MultiMap<Long, Ticket> tickets,
            CsvReaderType ticketReaderType
     ){
         infractionsReaderType.reader.readCsv(infractionsPath, line -> {
@@ -68,18 +77,24 @@ public class DatasetHelper {
             );
         });
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         ticketReaderType.reader.readCsv(ticketsPath, line -> {
             String[] fields = line.split(";");
-            tickets.add(new TicketCHI(
-                    LocalDateTime.parse(fields[0], formatter),
-                    fields[1],
-                    fields[2],
-                    fields[3],
-                    Integer.parseInt(fields[4]),
-                    fields[5]
-            ));
+
+            LocalDateTime date = LocalDateTime.parse(fields[0], dateFormatter);
+
+            tickets.put(
+                    date.toEpochSecond(ZoneOffset.UTC),
+                    new TicketCHI(
+                        date,
+                        fields[1],
+                        fields[2],
+                        fields[3],
+                        Integer.parseInt(fields[4]),
+                        fields[5]
+                    )
+            );
         });
     }
 
