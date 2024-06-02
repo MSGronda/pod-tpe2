@@ -10,6 +10,10 @@ public class InfractionNYC extends Infraction implements DataSerializable {
     private int code;
     private String definition;
 
+    public InfractionNYC(){
+        // Necessary for hazelcast
+    }
+
     public InfractionNYC(final int code, final String definition){
         this.code = code;
         this.definition = definition;
@@ -30,5 +34,22 @@ public class InfractionNYC extends Infraction implements DataSerializable {
     @Override
     public String getDescription() {
         return definition;
+    }
+
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getDefinition() {
+        return definition;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
     }
 }

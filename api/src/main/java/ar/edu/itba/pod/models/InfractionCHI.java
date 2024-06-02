@@ -11,6 +11,10 @@ public class InfractionCHI extends Infraction implements DataSerializable {
     private String code;
     private String description;
 
+    public InfractionCHI(){
+        // Necessary for hazelcast
+    }
+
     public InfractionCHI(String code, String description){
         this.code = code;
         this.description = description;
@@ -29,12 +33,20 @@ public class InfractionCHI extends Infraction implements DataSerializable {
         description = objectDataInput.readUTF();
     }
 
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
     public String getCode() {
         return code;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
