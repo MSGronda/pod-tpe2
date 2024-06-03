@@ -1,19 +1,19 @@
 package ar.edu.itba.pod.query5;
 
-import ar.edu.itba.pod.models.Pair;
+import ar.edu.itba.pod.models.StringPair;
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
 import java.util.*;
 
-public class GroupingByFineReducer implements ReducerFactory<Integer, String, List<Pair<String, String>>> {
+public class GroupingByFineReducer implements ReducerFactory<Integer, String, List<StringPair>> {
 
     @Override
-    public Reducer<String, List<Pair<String, String>>> newReducer(Integer fineRange) {
+    public Reducer<String, List<StringPair>> newReducer(Integer fineRange) {
         return new GroupingByFineReducer.GroupReducer();
     }
 
-    private static class GroupReducer extends Reducer<String, List<Pair<String, String>>>{
+    private static class GroupReducer extends Reducer<String, List<StringPair>> {
         private Set<String> infractionNames;
         @Override
         public void beginReduce() {
@@ -26,14 +26,14 @@ public class GroupingByFineReducer implements ReducerFactory<Integer, String, Li
         }
 
         @Override
-        public List<Pair<String, String>> finalizeReduce() {
-            List<Pair<String, String>> resp = new ArrayList<>();
+        public List<StringPair> finalizeReduce() {
+            List<StringPair> resp = new ArrayList<>();
 
             Object[] infractions = infractionNames.toArray();
 
             for(int i=0; i<infractions.length; i++){
                 for(int j=0; j<i; j++){
-                    resp.add(new Pair<>((String) infractions[i], (String) infractions[j]));     // TODO: check el casteo
+                    resp.add(new StringPair((String) infractions[i], (String) infractions[j]));     // TODO: check el casteo
                 }
             }
 
