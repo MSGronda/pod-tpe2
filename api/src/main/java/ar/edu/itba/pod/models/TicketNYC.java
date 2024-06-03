@@ -1,8 +1,7 @@
 package ar.edu.itba.pod.models;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.util.Objects;
 
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import com.hazelcast.nio.ObjectDataInput;
@@ -111,6 +110,19 @@ public class TicketNYC extends Ticket implements DataSerializable {
 
     public String getIssuingAgency() {
         return issuingAgency;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TicketNYC ticketNYC = (TicketNYC) o;
+        return infractionCode == ticketNYC.infractionCode && Float.compare(fineAmount, ticketNYC.fineAmount) == 0 && Objects.equals(plate, ticketNYC.plate) && Objects.equals(issueDate, ticketNYC.issueDate) && Objects.equals(countyName, ticketNYC.countyName) && Objects.equals(issuingAgency, ticketNYC.issuingAgency);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(plate, issueDate, infractionCode, fineAmount, countyName, issuingAgency);
     }
 
     public void setIssuingAgency(String issuingAgency) {

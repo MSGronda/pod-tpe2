@@ -3,7 +3,7 @@ package ar.edu.itba.pod.models;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.UUID;
+import java.util.Objects;
 
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import com.hazelcast.nio.ObjectDataInput;
@@ -72,6 +72,11 @@ public class TicketCHI extends Ticket implements DataSerializable{
         return fine;
     }
 
+    @Override
+    public String getPlate() {
+        return licensePlateNumber;
+    }
+
     public LocalDateTime getIssueDate() {
         return issueDate;
     }
@@ -118,5 +123,18 @@ public class TicketCHI extends Ticket implements DataSerializable{
 
     public void setCommunityArea(String communityArea) {
         this.communityArea = communityArea;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TicketCHI ticketCHI = (TicketCHI) o;
+        return fine == ticketCHI.fine && Objects.equals(issueDate, ticketCHI.issueDate) && Objects.equals(licensePlateNumber, ticketCHI.licensePlateNumber) && Objects.equals(violationCode, ticketCHI.violationCode) && Objects.equals(unitDescription, ticketCHI.unitDescription) && Objects.equals(communityArea, ticketCHI.communityArea);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(issueDate, licensePlateNumber, violationCode, unitDescription, fine, communityArea);
     }
 }

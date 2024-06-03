@@ -6,7 +6,6 @@ import ar.edu.itba.pod.models.TicketCHI;
 import ar.edu.itba.pod.models.TicketNYC;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
-import com.hazelcast.core.IList;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
 
@@ -15,9 +14,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class DatasetHelper {
@@ -56,7 +55,7 @@ public class DatasetHelper {
             LocalDate date = LocalDate.parse(fields[1], dateFormatter);
 
             tickets.put(
-                    date.toEpochDay(),
+                    date.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC),
                     new TicketNYC(
                         fields[0],
                         date,

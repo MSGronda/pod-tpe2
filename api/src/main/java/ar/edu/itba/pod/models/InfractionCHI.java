@@ -6,16 +6,17 @@ import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class InfractionCHI extends Infraction implements DataSerializable {
     private String code;
     private String description;
 
-    public InfractionCHI(){
+    public InfractionCHI() {
         // Necessary for hazelcast
     }
 
-    public InfractionCHI(String code, String description){
+    public InfractionCHI(String code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -36,6 +37,19 @@ public class InfractionCHI extends Infraction implements DataSerializable {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InfractionCHI that = (InfractionCHI) o;
+        return Objects.equals(code, that.code) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, description);
     }
 
     public String getCode() {

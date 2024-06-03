@@ -4,17 +4,19 @@ import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
+
 import java.io.IOException;
+import java.util.Objects;
 
 public class InfractionNYC extends Infraction implements DataSerializable {
     private int code;
     private String definition;
 
-    public InfractionNYC(){
+    public InfractionNYC() {
         // Necessary for hazelcast
     }
 
-    public InfractionNYC(final int code, final String definition){
+    public InfractionNYC(final int code, final String definition) {
         this.code = code;
         this.definition = definition;
     }
@@ -36,6 +38,18 @@ public class InfractionNYC extends Infraction implements DataSerializable {
         return definition;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InfractionNYC that = (InfractionNYC) o;
+        return code == that.code && Objects.equals(definition, that.definition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, definition);
+    }
 
     public int getCode() {
         return code;
