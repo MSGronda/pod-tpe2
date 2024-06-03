@@ -6,14 +6,14 @@ import com.hazelcast.core.HazelcastInstanceAware;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
-public class AgencyCollectionMapper implements Mapper<Integer, Ticket, String, Long>, HazelcastInstanceAware {
+public class AgencyCollectionMapper implements Mapper<Long, Ticket, String, Long>{
+
+    public AgencyCollectionMapper() {
+    }
 
     @Override
-    public void map(Integer integer, Ticket ticket, Context<String, Long> context) {
+    public void map(Long value, Ticket ticket, Context<String, Long> context) {
         context.emit(ticket.getAgency(), (long) ticket.getFineAmount());
     }
 
-    @Override
-    public void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-    }
 }

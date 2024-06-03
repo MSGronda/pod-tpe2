@@ -7,6 +7,9 @@ import com.hazelcast.mapreduce.ReducerFactory;
 // Se encarga el Collator de sumar toda la recaudacion y calcular el porcentage
 public class AgencyCollectionReducer implements ReducerFactory<String, Long, Long> {
 
+    public AgencyCollectionReducer() {
+    }
+
     @Override
     public Reducer<Long, Long> newReducer(String s) {
         return new AgencyReducer();

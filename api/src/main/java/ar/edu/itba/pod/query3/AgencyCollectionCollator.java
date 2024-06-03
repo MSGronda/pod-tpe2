@@ -5,6 +5,9 @@ import com.hazelcast.mapreduce.Collator;
 import java.util.*;
 
 public class AgencyCollectionCollator implements Collator<Map.Entry<String, Long>, Map<String, Double>> {
+    public AgencyCollectionCollator() {
+    }
+
     @Override
     public Map<String, Double> collate(Iterable<Map.Entry<String, Long>> iterable) {
         long total = 0;
