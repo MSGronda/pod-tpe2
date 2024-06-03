@@ -37,7 +37,6 @@ public class TestClient {
         HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);     // Creamos el cliente
 
         // CARGADO DE DATOS
-
         IMap<String, Infraction> infractions = hazelcastInstance.getMap(Constants.INFRACTION_MAP);
         MultiMap<Long, Ticket> tickets = hazelcastInstance.getMultiMap(Constants.TICKET_LIST);
 
@@ -51,7 +50,6 @@ public class TestClient {
         );
 
         // CORRER EL JOB
-
         JobTracker jobTracker = hazelcastInstance.getJobTracker(Constants.HZ_NAMESPACE);
 
         KeyValueSource<Long, Ticket> source = KeyValueSource.fromMultiMap(hazelcastInstance.getMultiMap(Constants.TICKET_LIST));

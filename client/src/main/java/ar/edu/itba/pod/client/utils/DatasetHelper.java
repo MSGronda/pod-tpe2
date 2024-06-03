@@ -22,6 +22,8 @@ import java.util.function.Consumer;
 
 public class DatasetHelper {
     private static final int SKIP_CSV_LINES = 1;
+    private static final int NUM_FIELDS_TICKET = 6;
+    private static final int NUM_FIELDS_INFRACTION = 2;
 
     public static void loadNYCData(
             String infractionsPath,
@@ -33,6 +35,9 @@ public class DatasetHelper {
     ){
         infractionsReaderType.reader.readCsv(infractionsPath, line -> {
             String[] fields = line.split(";");
+
+            if(fields.length != NUM_FIELDS_INFRACTION){ return; }
+
             infractions.put(
                 fields[0],
                 new InfractionNYC(Integer.parseInt(fields[0]), fields[1])
@@ -45,6 +50,8 @@ public class DatasetHelper {
         ticketReaderType.reader.readCsv(ticketsPath, line -> {
 
             String[] fields = line.split(";");
+
+            if(fields.length != NUM_FIELDS_TICKET){ return; }
 
             LocalDate date = LocalDate.parse(fields[1], dateFormatter);
 
@@ -71,6 +78,9 @@ public class DatasetHelper {
     ){
         infractionsReaderType.reader.readCsv(infractionsPath, line -> {
             String[] fields = line.split(";");
+
+            if(fields.length != NUM_FIELDS_INFRACTION){ return; }
+
             infractions.put(
                     fields[0],
                     new InfractionCHI(fields[0], fields[1])
@@ -82,8 +92,9 @@ public class DatasetHelper {
         ticketReaderType.reader.readCsv(ticketsPath, line -> {
             String[] fields = line.split(";");
 
-            LocalDateTime date = LocalDateTime.parse(fields[0], dateFormatter);
+            if(fields.length != NUM_FIELDS_TICKET){ return; }
 
+            LocalDateTime date = LocalDateTime.parse(fields[0], dateFormatter);
             tickets.put(
                     date.toEpochSecond(ZoneOffset.UTC),
                     new TicketCHI(
@@ -126,7 +137,5 @@ public class DatasetHelper {
             System.out.println(e); //TODO: handle properly
         }
     };
-
-
 
 }
