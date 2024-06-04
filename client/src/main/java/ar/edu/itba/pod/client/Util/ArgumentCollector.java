@@ -5,9 +5,10 @@ import ar.edu.itba.pod.client.Query;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.List;
 
 public class ArgumentCollector {
@@ -73,14 +74,14 @@ public class ArgumentCollector {
                         break;
                     case "from":
                         try {
-                            builder.from(LocalDateTime.parse(optionValue, dateTimeFormatter));
+                            builder.from(LocalDate.parse(optionValue, dateTimeFormatter).atStartOfDay());
                         } catch (DateTimeParseException e) {
                             errors.append("from is not a date in a valid format\n");
                         }
                         break;
                     case "to":
                         try {
-                            builder.to(LocalDateTime.parse(optionValue, dateTimeFormatter));
+                            builder.to(LocalDate.parse(optionValue, dateTimeFormatter).atStartOfDay());
                         } catch (DateTimeParseException e) {
                             errors.append("to is not a date in a valid format\n");
                         }
@@ -96,9 +97,30 @@ public class ArgumentCollector {
             }
         }
 
+        Argument arguments = builder.build();
+
+        arguments.getQuery().checkQueryArguments(arguments, errors);
+
+        if (arguments.getInPath() == null) {
+            errors.append("-DinPath is a required argument, and it must be a directory\n");
+        }
+        if (arguments.getOutPath() == null) {
+            errors.append("-DoutPath is a required argument, and it must be a directory\n");
+        }
+        if (arguments.getCity() == null) {
+            errors
+                    .append("-Dcity=")
+                    .append(Arrays.stream(City.values()).map(Enum::name))
+                    .append(" is a required argument\n");
+        }
+        if (arguments.getAddresses() == null) {
+            errors.append("-Daddresses is a required argument\n");
+        }
+
         if (!errors.isEmpty()) {
+            errors.insert(0, "\n");
             throw new IllegalArgumentException(errors.toString());
         }
-        return builder.build();
+        return arguments;
     }
 }

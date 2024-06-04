@@ -91,6 +91,19 @@ public enum Query {
                     (key, value) -> String.format("%s;%s;%d", key, value.getPlate(), value.getNum())
             );
         }
+
+        @Override
+        public void checkQueryArguments(Argument arguments, StringBuilder errors) {
+            super.checkQueryArguments(arguments, errors);
+
+            if (arguments.getFrom() == null) {
+                errors.append("-Dfrom=DD/MM/YYYY is a required parameter for this query\n");
+            }
+
+            if (arguments.getTo() == null) {
+                errors.append("-Dto=DD/MM/YYYY is a required parameter for this query\n");
+            }
+        }
     }, FIVE(5, "Group;Infraction A;Infraction B") {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException {
@@ -115,6 +128,8 @@ public enum Query {
     }
 
     public abstract void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException;
+
+    public void checkQueryArguments(Argument arguments, StringBuilder errors) {}
 
     private Path getFilePath(Path outPathDir) {
         return outPathDir.resolve(String.format("query%d.csv", num));
