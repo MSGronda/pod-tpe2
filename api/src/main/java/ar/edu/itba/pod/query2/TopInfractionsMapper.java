@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.query2;
 
+import ar.edu.itba.pod.Constants;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import com.hazelcast.core.HazelcastInstance;
@@ -10,7 +11,7 @@ import com.hazelcast.mapreduce.Mapper;
 
 public class TopInfractionsMapper implements Mapper<Long, Ticket, String, String>, HazelcastInstanceAware {
 
-    private IMap<String, Infraction> infractions;
+    private transient IMap<String, Infraction> infractions;
 
     @Override
     public void map(Long i, Ticket t, Context<String, String> context) {
@@ -19,7 +20,7 @@ public class TopInfractionsMapper implements Mapper<Long, Ticket, String, String
 
     @Override
     public void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        this.infractions = hazelcastInstance.getMap("infractions");
+        this.infractions = hazelcastInstance.getMap(Constants.INFRACTION_MAP);
     }
 
 
