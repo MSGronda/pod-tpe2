@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 public class Server {
-    private static Logger logger = LoggerFactory.getLogger(Server.class);
+    private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) {
         logger.info("Initializing Hazelcast node...");
@@ -33,6 +33,6 @@ public class Server {
         hzConfig.setNetworkConfig(networkConfig);
 
         HazelcastInstance instance = Hazelcast.newHazelcastInstance(hzConfig);
-        logger.info("New Hazelcast node @ " + instance.getCluster().getLocalMember().getAddress());
+        logger.info("New Hazelcast node @ {}", instance.getCluster().getLocalMember().getAddress());
     }
 }

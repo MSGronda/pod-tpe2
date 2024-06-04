@@ -8,12 +8,12 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
-public class TopInfractionsMapper implements Mapper<Integer, Ticket, String, String>, HazelcastInstanceAware {
+public class TopInfractionsMapper implements Mapper<Long, Ticket, String, String>, HazelcastInstanceAware {
 
     private IMap<String, Infraction> infractions;
 
     @Override
-    public void map(Integer i, Ticket t, Context<String, String> context) {
+    public void map(Long i, Ticket t, Context<String, String> context) {
         context.emit(t.getCounty(),  infractions.get(t.getInfractionCode()).getDescription());
     }
 

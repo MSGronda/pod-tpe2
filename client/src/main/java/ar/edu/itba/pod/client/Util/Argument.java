@@ -1,5 +1,9 @@
 package ar.edu.itba.pod.client.Util;
 
+import ar.edu.itba.pod.client.City;
+import ar.edu.itba.pod.client.Query;
+
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 public class Argument {
@@ -8,11 +12,11 @@ public class Argument {
 
     private final String[] addresses;
 
-    private final String city;
+    private final City city;
 
-    private final String inPath;
+    private final Path inPath;
 
-    private final String outPath;
+    private final Path outPath;
 
     // Query 3
 
@@ -24,16 +28,18 @@ public class Argument {
     private final LocalDateTime from;
     private final LocalDateTime to;
 
+    private final Query query;
+
     // GETTERS
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public String getInPath() {
+    public Path getInPath() {
         return inPath;
     }
 
-    public String getOutPath() {
+    public Path getOutPath() {
         return outPath;
     }
 
@@ -57,33 +63,43 @@ public class Argument {
         this.n = builder.n;
         this.from = builder.from;
         this.to = builder.to;
+        this.query = builder.query;
+    }
+
+    public String[] getAddresses() {
+        return addresses;
+    }
+
+    public Query getQuery() {
+        return query;
     }
 
     public static class Builder {
         private String[] addresses;
-        private String city;
-        private String inPath;
-        private String outPath;
+        private City city;
+        private Path inPath;
+        private Path outPath;
         private int n;
         private LocalDateTime from;
         private LocalDateTime to;
+        private Query query;
 
         public Builder addresses(String[] addresses) {
             this.addresses = addresses;
             return this;
         }
 
-        public Builder city(String city) {
+        public Builder city(City city) {
             this.city = city;
             return this;
         }
 
-        public Builder inPath(String inPath) {
+        public Builder inPath(Path inPath) {
             this.inPath = inPath;
             return this;
         }
 
-        public Builder outPath(String outPath) {
+        public Builder outPath(Path outPath) {
             this.outPath = outPath;
             return this;
         }
@@ -100,6 +116,11 @@ public class Argument {
 
         public Builder to(LocalDateTime to) {
             this.to = to;
+            return this;
+        }
+
+        public Builder query(Query query) {
+            this.query = query;
             return this;
         }
 

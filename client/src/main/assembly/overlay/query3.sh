@@ -6,4 +6,4 @@ PATH_TO_CODE_BASE=`pwd`
 
 MAIN_CLASS="ar.edu.itba.pod.client.Client"
 
-java $* $JAVA_OPTS -cp 'lib/jars/*'  $MAIN_CLASS
+java -DtimingsFile=time3.txt -Dquery=3 $* $JAVA_OPTS -cp 'lib/jars/*'  $MAIN_CLASS
