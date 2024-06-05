@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+@SuppressWarnings("deprecation")
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
     private static final Logger timingsLogger = LoggerFactory.getLogger("TimingsLogger");
@@ -41,13 +42,11 @@ public class Client {
         timingsLogger.info("Loading data finished");
         logger.info("Loading data finished");
 
-
         JobTracker jobTracker = hz.getJobTracker(Constants.HZ_NAMESPACE);
 
         KeyValueSource<Long, Ticket> source = KeyValueSource.fromMultiMap(hz.getMultiMap(Constants.TICKET_LIST));
 
         Job<Long, Ticket> job = jobTracker.newJob(source);
-
 
         try {
             logger.info("Starting MapReduce");

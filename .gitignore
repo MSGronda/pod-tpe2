@@ -44,3 +44,4 @@ replay_pid*
 # Intellij
 .idea
 /tmp/
+*.csv
