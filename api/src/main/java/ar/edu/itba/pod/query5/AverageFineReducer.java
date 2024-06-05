@@ -3,6 +3,7 @@ package ar.edu.itba.pod.query5;
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
+@SuppressWarnings("deprecation")
 public class AverageFineReducer implements ReducerFactory<String, Float, Float> {
 
     @Override

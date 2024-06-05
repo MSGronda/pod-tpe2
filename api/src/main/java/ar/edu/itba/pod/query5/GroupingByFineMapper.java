@@ -3,6 +3,7 @@ package ar.edu.itba.pod.query5;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
+@SuppressWarnings("deprecation")
 public class GroupingByFineMapper implements Mapper<String, Float, Integer, String> {
     public GroupingByFineMapper(){
         // Necessary for hazelcast
