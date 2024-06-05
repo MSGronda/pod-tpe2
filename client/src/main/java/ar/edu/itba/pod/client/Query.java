@@ -6,6 +6,7 @@ import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import ar.edu.itba.pod.query1.TotalInfractionsCollator;
 import ar.edu.itba.pod.query1.TotalInfractionsMapper;
 import ar.edu.itba.pod.query1.TotalInfractionsReducer;
+import ar.edu.itba.pod.query2.TopInfractionsCollator;
 import ar.edu.itba.pod.query2.TopInfractionsMapper;
 import ar.edu.itba.pod.query2.TopInfractionsReducer;
 import ar.edu.itba.pod.query3.AgencyCollectionCollator;
@@ -50,7 +51,7 @@ public enum Query {
             Map<String, List<String>> results = job
                     .mapper(new TopInfractionsMapper())
                     .reducer(new TopInfractionsReducer())
-                    .submit()
+                    .submit(new TopInfractionsCollator())
                     .get();
 
             Query.writeOutput(TWO.getFilePath(arguments.getOutPath()),
