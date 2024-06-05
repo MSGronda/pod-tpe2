@@ -23,17 +23,22 @@ import java.util.concurrent.ExecutionException;
 
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
+    private static final Logger timingsLogger = LoggerFactory.getLogger("TimingsLogger");
 
     public static void main(String[] args) {
         Argument arguments = ArgumentCollector.obtainArguments();
 
+        logger.info("Starting Hazelcast client");
         HazelcastInstance hz = startHazelcastClient(arguments.getAddresses());
+        logger.info("Hazelcast client started");
 
         IMap<String, Infraction> infractions = hz.getMap(Constants.INFRACTION_MAP);
         MultiMap<Long, Ticket> tickets = hz.getMultiMap(Constants.TICKET_LIST);
 
         logger.info("Loading data");
+        timingsLogger.info("Loading data");
         arguments.getCity().loadData(arguments, infractions, tickets);
+        timingsLogger.info("Loading data finished");
         logger.info("Loading data finished");
 
 
@@ -46,13 +51,17 @@ public class Client {
 
         try {
             logger.info("Starting MapReduce");
+            timingsLogger.info("Starting MapReduce");
             arguments.getQuery().realizeMapReduce(job, arguments);
+            timingsLogger.info("MapReduce finished");
             logger.info("MapReduce finished");
         } catch (InterruptedException | ExecutionException | IOException e) {
             logger.error("Oops! Something went wrong", e);
         } finally {
+            logger.info("Clearing maps used");
             infractions.clear();
             tickets.clear();
+            logger.info("Shutting down Hazelcast client");
             hz.shutdown();
         }
     }

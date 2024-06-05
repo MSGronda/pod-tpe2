@@ -145,4 +145,8 @@ public enum Query {
             }
         }
     }
+
+    public int getNum() {
+        return num;
+    }
 }
