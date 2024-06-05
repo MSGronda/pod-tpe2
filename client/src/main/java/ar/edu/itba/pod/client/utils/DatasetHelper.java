@@ -8,21 +8,25 @@ import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.MultiMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class DatasetHelper {
     private static final int SKIP_CSV_LINES = 1;
     private static final int NUM_FIELDS_TICKET = 6;
     private static final int NUM_FIELDS_INFRACTION = 2;
+    private static final Logger logger = LoggerFactory.getLogger(DatasetHelper.class);
 
     public static void loadNYCData(
             String infractionsPath,
@@ -122,18 +126,18 @@ public class DatasetHelper {
     }
 
     private static final CsvReader parallelReader = (filepath, consumer) -> {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
-            reader.lines().skip(SKIP_CSV_LINES).parallel().forEach(consumer);
+        try (Stream<String> reader = Files.lines(Path.of(filepath))) {
+            reader.skip(SKIP_CSV_LINES).parallel().forEach(consumer);
         } catch (IOException e) {
-            System.out.println(e); //TODO: handle properly
+            logger.error("Error reading file", e);
         }
     };
 
     private static final CsvReader sequentialReader = (filepath, consumer) -> {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
-            reader.lines().skip(SKIP_CSV_LINES).forEach(consumer);
+        try (Stream<String> reader = Files.lines(Path.of(filepath)) ){
+            reader.skip(SKIP_CSV_LINES).forEach(consumer);
         } catch (IOException e) {
-            System.out.println(e); //TODO: handle properly
+            logger.error("Error reading file", e);
         }
     };
 
