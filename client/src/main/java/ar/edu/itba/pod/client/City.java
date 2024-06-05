@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.client.Util.Argument;
+import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.client.utils.Constants;
 import ar.edu.itba.pod.models.InfractionCHI;
 import ar.edu.itba.pod.models.InfractionNYC;

@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.client.Util;
+package ar.edu.itba.pod.client.utils;
 
 import ar.edu.itba.pod.client.City;
 import ar.edu.itba.pod.client.Query;
