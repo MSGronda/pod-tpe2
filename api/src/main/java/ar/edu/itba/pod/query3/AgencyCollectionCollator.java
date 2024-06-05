@@ -5,7 +5,9 @@ import com.hazelcast.mapreduce.Collator;
 import java.util.*;
 
 public class AgencyCollectionCollator implements Collator<Map.Entry<String, Long>, Map<String, Double>> {
-    public AgencyCollectionCollator() {
+    private final int n;
+    public AgencyCollectionCollator(final int n) {
+        this.n = n;
     }
 
     @Override
@@ -37,8 +39,13 @@ public class AgencyCollectionCollator implements Collator<Map.Entry<String, Long
         });
 
         Map<String, Double> sortedMap = new LinkedHashMap<>();
+        int i = 0;
         for (Map.Entry<String, Double> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
+            i++;
+            if (i == n) { // Se encarga de poner solo los primeros n elementos
+                break;
+            }
         }
         return sortedMap;
     }

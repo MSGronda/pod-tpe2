@@ -64,7 +64,7 @@ public enum Query {
             Map<String, Double> results = job
                     .mapper(new AgencyCollectionMapper())
                     .reducer(new AgencyCollectionReducer())
-                    .submit(new AgencyCollectionCollator())
+                    .submit(new AgencyCollectionCollator(arguments.getN()))
                     .get();
 
             Query.writeOutput(THREE.getFilePath(arguments.getOutPath()),
