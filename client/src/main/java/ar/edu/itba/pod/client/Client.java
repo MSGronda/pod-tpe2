@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
+    private static final Logger timingsLogger = LoggerFactory.getLogger("TimingsLogger");
 
     public static void main(String[] args) {
         Argument arguments = ArgumentCollector.obtainArguments();
@@ -33,7 +34,9 @@ public class Client {
         MultiMap<Long, Ticket> tickets = hz.getMultiMap(Constants.TICKET_LIST);
 
         logger.info("Loading data");
+        timingsLogger.info("Loading data");
         arguments.getCity().loadData(arguments, infractions, tickets);
+        timingsLogger.info("Loading data finished");
         logger.info("Loading data finished");
 
 
@@ -46,8 +49,10 @@ public class Client {
 
         try {
             logger.info("Starting MapReduce");
+            timingsLogger.info("Starting MapReduce");
             arguments.getQuery().realizeMapReduce(job, arguments);
-            logger.info("MapReduce finished");
+            timingsLogger.info("MapReduce finished");
+            logger.info("Starting MapReduce");
         } catch (InterruptedException | ExecutionException | IOException e) {
             logger.error("Oops! Something went wrong", e);
         } finally {
