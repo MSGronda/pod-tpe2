@@ -3,9 +3,9 @@ package ar.edu.itba.pod.query2;
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
-
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class TopInfractionsReducer implements ReducerFactory<String, String, List<String>> {
 
     @Override
