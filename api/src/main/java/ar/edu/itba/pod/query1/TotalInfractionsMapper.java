@@ -12,22 +12,15 @@ import com.hazelcast.mapreduce.Mapper;
 import java.io.Serializable;
 
 @SuppressWarnings("deprecation")
-public class TotalInfractionsMapper implements Mapper<Long, Ticket, String, Long>, HazelcastInstanceAware {
-    private static final Long ONE = 1L;
-
-    private transient IMap<String, Infraction> infractions;
+public class TotalInfractionsMapper implements Mapper<Long, Ticket, String, Integer> {
+    private static final Integer ONE = 1;
 
     public TotalInfractionsMapper(){
-
+        // Necessary for hazelcast
     }
 
     @Override
-    public void map(Long i, Ticket t, Context<String, Long> context) {
-        context.emit(infractions.get(t.getInfractionCode()).getDescription(), ONE);
-    }
-
-    @Override
-    public void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        this.infractions = hazelcastInstance.getMap(Constants.INFRACTION_MAP);
+    public void map(Long i, Ticket t, Context<String, Integer> context) {
+        context.emit(t.getInfractionCode(), ONE);
     }
 }

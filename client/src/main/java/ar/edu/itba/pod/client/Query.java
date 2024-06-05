@@ -3,6 +3,7 @@ package ar.edu.itba.pod.client;
 import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.models.StringLongPair;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
+import ar.edu.itba.pod.query1.TotalInfractionsCollator;
 import ar.edu.itba.pod.query1.TotalInfractionsMapper;
 import ar.edu.itba.pod.query1.TotalInfractionsReducer;
 import ar.edu.itba.pod.query2.TopInfractionsMapper;
@@ -11,6 +12,8 @@ import ar.edu.itba.pod.query3.AgencyCollectionCollator;
 import ar.edu.itba.pod.query3.AgencyCollectionMapper;
 import ar.edu.itba.pod.query3.AgencyCollectionReducer;
 import ar.edu.itba.pod.query4.*;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.mapreduce.Job;
 
 import java.io.BufferedWriter;
@@ -23,14 +26,15 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
 
+@SuppressWarnings("deprecation")
 public enum Query {
     ONE(1, "Infraction;Tickets") {
         @Override
-        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException {
-            Map<String, Long> results = job
+        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
+            Map<String, Integer> results = job
                     .mapper(new TotalInfractionsMapper())
                     .reducer(new TotalInfractionsReducer())
-                    .submit()
+                    .submit(new TotalInfractionsCollator(hzInstance))
                     .get();
 
             Query.writeOutput(
@@ -42,7 +46,7 @@ public enum Query {
         }
     }, TWO(2, "County;InfractionTop1;InfractionTop2;InfractionTop3") {
         @Override
-        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException {
+        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, List<String>> results = job
                     .mapper(new TopInfractionsMapper())
                     .reducer(new TopInfractionsReducer())
@@ -60,7 +64,7 @@ public enum Query {
         }
     }, THREE(3, "Issuing Agency;Percentage") {
         @Override
-        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException {
+        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, Double> results = job
                     .mapper(new AgencyCollectionMapper())
                     .reducer(new AgencyCollectionReducer())
@@ -75,7 +79,7 @@ public enum Query {
         }
     }, FOUR(4, "County;Plate;Tickets") {
         @Override
-        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException {
+        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, StringLongPair> results = job
                     .keyPredicate(new PlatesMostInfractionsByCountyKeyPredicate(arguments.getFrom(), arguments.getTo()))
                     .mapper(new PlatesMostInfractionsByCountyMapper())
@@ -106,7 +110,7 @@ public enum Query {
         }
     }, FIVE(5, "Group;Infraction A;Infraction B") {
         @Override
-        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException {
+        public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             // TODO: Implement
         }
     };
@@ -127,7 +131,7 @@ public enum Query {
         throw new IllegalArgumentException();
     }
 
-    public abstract void realizeMapReduce(Job<Long, Ticket> job, Argument arguments) throws ExecutionException, InterruptedException, IOException;
+    public abstract void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException;
 
     public void checkQueryArguments(Argument arguments, StringBuilder errors) {}
 

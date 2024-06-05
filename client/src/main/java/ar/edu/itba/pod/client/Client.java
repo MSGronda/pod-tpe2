@@ -51,7 +51,7 @@ public class Client {
         try {
             logger.info("Starting MapReduce");
             timingsLogger.info("Starting MapReduce");
-            arguments.getQuery().realizeMapReduce(job, arguments);
+            arguments.getQuery().realizeMapReduce(job, arguments, hz);
             timingsLogger.info("MapReduce finished");
             logger.info("MapReduce finished");
         } catch (InterruptedException | ExecutionException | IOException e) {
