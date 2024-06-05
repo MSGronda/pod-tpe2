@@ -2,6 +2,8 @@ package ar.edu.itba.pod.client;
 
 import ar.edu.itba.pod.Constants;
 import ar.edu.itba.pod.client.utils.Argument;
+import ar.edu.itba.pod.models.CHITickets.*;
+import ar.edu.itba.pod.models.NYCTickets.*;
 import ar.edu.itba.pod.models.StringLongPair;
 import ar.edu.itba.pod.models.StringPair;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
@@ -16,7 +18,6 @@ import ar.edu.itba.pod.query3.AgencyCollectionMapper;
 import ar.edu.itba.pod.query3.AgencyCollectionReducer;
 import ar.edu.itba.pod.query4.*;
 import ar.edu.itba.pod.query5.*;
-import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Job;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,13 +55,23 @@ public enum Query {
                     (key, value) -> String.format("%s;%s", key, value)
             );
         }
+
+        @Override
+        public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
+            return new TicketCHIQuery1(issueDate, violationCode);
+        }
+
+        @Override
+        public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
+            return new TicketNYCQuery1(issueDate, infractionCode);
+        }
     }, TWO(2, "County;InfractionTop1;InfractionTop2;InfractionTop3") {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, List<String>> results = job
                     .mapper(new TopInfractionsMapper())
                     .reducer(new TopInfractionsReducer())
-                    .submit(new TopInfractionsCollator())
+                    .submit(new TopInfractionsCollator(hzInstance))
                     .get();
 
             Query.writeOutput(TWO.getFilePath(arguments.getOutPath()),
@@ -69,6 +82,16 @@ public enum Query {
                         value.forEach(s -> sb.append(";").append(s));
                         return sb.toString();
                     });
+        }
+
+        @Override
+        public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
+            return new TicketCHIQuery2(issueDate, violationCode, communityArea);
+        }
+
+        @Override
+        public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
+            return new TicketNYCQuery2(issueDate, infractionCode, countyName);
         }
     }, THREE(3, "Issuing Agency;Percentage") {
         @Override
@@ -84,6 +107,16 @@ public enum Query {
                     results,
                     (key, value) -> String.format("%s;%.2f%%", key, value)
             );
+        }
+
+        @Override
+        public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
+            return new TicketCHIQuery3(issueDate, unitDescription, fine);
+        }
+
+        @Override
+        public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
+            return new TicketNYCQuery3(issueDate, fineAmount, issuingAgency);
         }
     }, FOUR(4, "County;Plate;Tickets") {
         @Override
@@ -103,6 +136,17 @@ public enum Query {
                     (key, value) -> String.format("%s;%s;%d", key, value.getPlate(), value.getNum())
             );
         }
+
+        @Override
+        public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
+            return new TicketCHIQuery4(issueDate, licensePlateNumber, communityArea);
+        }
+
+        @Override
+        public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
+            return new TicketNYCQuery4(issueDate, plate, countyName);
+        }
+
 
         @Override
         public void checkQueryArguments(Argument arguments, StringBuilder errors) {
@@ -151,6 +195,17 @@ public enum Query {
                     }
             );
         }
+
+        @Override
+        public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
+            return new TicketCHIQuery5(issueDate, violationCode, fine);
+        }
+
+        @Override
+        public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
+            return new TicketNYCQuery5(issueDate, infractionCode, fineAmount);
+        }
+
     };
 
     private final int num;
@@ -170,6 +225,9 @@ public enum Query {
     }
 
     public abstract void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException;
+
+    public abstract Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea);
+    public abstract Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency);
 
     public void checkQueryArguments(Argument arguments, StringBuilder errors) {}
 

@@ -1,9 +1,8 @@
 package ar.edu.itba.pod.client.utils;
 
+import ar.edu.itba.pod.client.Query;
 import ar.edu.itba.pod.models.InfractionCHI;
 import ar.edu.itba.pod.models.InfractionNYC;
-import ar.edu.itba.pod.models.TicketCHI;
-import ar.edu.itba.pod.models.TicketNYC;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import com.hazelcast.core.IMap;
@@ -34,7 +33,8 @@ public class DatasetHelper {
             CsvReaderType infractionsReaderType,
             String ticketsPath,
             MultiMap<Long, Ticket> tickets,
-            CsvReaderType ticketReaderType
+            CsvReaderType ticketReaderType,
+            Query query
     ){
         infractionsReaderType.reader.readCsv(infractionsPath, line -> {
             String[] fields = line.split(";");
@@ -60,24 +60,26 @@ public class DatasetHelper {
 
             tickets.put(
                     date.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC),
-                    new TicketNYC(
+                    query.getNYCTicket(
                         fields[0],
                         date,
                         Integer.parseInt(fields[2]),
                         Float.parseFloat(fields[3]),
                         fields[4],
-                        fields[5])
+                        fields[5]
+                    )
             );
         });
     }
 
     public static void loadCHIData(
             String infractionsPath,
-           IMap<String, Infraction> infractions,
-           CsvReaderType infractionsReaderType,
-           String ticketsPath,
+            IMap<String, Infraction> infractions,
+            CsvReaderType infractionsReaderType,
+            String ticketsPath,
             MultiMap<Long, Ticket> tickets,
-           CsvReaderType ticketReaderType
+            CsvReaderType ticketReaderType,
+            Query query
     ){
         infractionsReaderType.reader.readCsv(infractionsPath, line -> {
             String[] fields = line.split(";");
@@ -100,7 +102,7 @@ public class DatasetHelper {
             LocalDateTime date = LocalDateTime.parse(fields[0], dateFormatter);
             tickets.put(
                     date.toEpochSecond(ZoneOffset.UTC),
-                    new TicketCHI(
+                    query.getCHITicket(
                         date,
                         fields[1],
                         fields[2],
