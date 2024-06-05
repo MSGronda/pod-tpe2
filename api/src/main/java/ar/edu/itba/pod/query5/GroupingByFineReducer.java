@@ -6,6 +6,7 @@ import com.hazelcast.mapreduce.ReducerFactory;
 
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class GroupingByFineReducer implements ReducerFactory<Integer, String, List<StringPair>> {
 
     @Override

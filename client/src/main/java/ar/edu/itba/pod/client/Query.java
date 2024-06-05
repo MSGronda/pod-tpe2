@@ -1,7 +1,9 @@
 package ar.edu.itba.pod.client;
 
+import ar.edu.itba.pod.Constants;
 import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.models.StringLongPair;
+import ar.edu.itba.pod.models.StringPair;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import ar.edu.itba.pod.query1.TotalInfractionsCollator;
 import ar.edu.itba.pod.query1.TotalInfractionsMapper;
@@ -13,9 +15,13 @@ import ar.edu.itba.pod.query3.AgencyCollectionCollator;
 import ar.edu.itba.pod.query3.AgencyCollectionMapper;
 import ar.edu.itba.pod.query3.AgencyCollectionReducer;
 import ar.edu.itba.pod.query4.*;
+import ar.edu.itba.pod.query5.*;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Job;
+import com.hazelcast.mapreduce.JobTracker;
+import com.hazelcast.mapreduce.KeyValueSource;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -24,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
 
@@ -112,7 +119,37 @@ public enum Query {
     }, FIVE(5, "Group;Infraction A;Infraction B") {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
-            // TODO: Implement
+            Map<String, Float> partialResults = job
+                    .mapper(new AverageFineMapper())
+                    .reducer(new AverageFineReducer())
+                    .submit()
+                    .get();
+
+            IMap<String, Float> partialResultMap = hzInstance.getMap("query5-partial-result");
+            partialResultMap.putAll(partialResults);
+
+            JobTracker jobTracker = hzInstance.getJobTracker(Constants.HZ_NAMESPACE);
+            KeyValueSource<String, Float> source = KeyValueSource.fromMap(partialResultMap);
+            Job<String, Float> job2 = jobTracker.newJob(source);
+
+
+            Map<Integer, Set<StringPair>> results = job2
+                    .mapper(new GroupingByFineMapper())
+                    .reducer(new GroupingByFineReducer())
+                    .submit(new GroupingByFineCollator(hzInstance))
+                    .get();
+
+
+            Query.writeOutput(
+                    FIVE.getFilePath(arguments.getOutPath()),
+                    FIVE.csvHeader,
+                    results,
+                    (key, set) -> {
+                        StringBuilder sb = new StringBuilder();
+                        set.forEach(sp -> sb.append(key).append(";").append(sp.getValue1()).append(";").append(sp.getValue2()).append("\n"));
+                        return sb.toString();
+                    }
+            );
         }
     };
 

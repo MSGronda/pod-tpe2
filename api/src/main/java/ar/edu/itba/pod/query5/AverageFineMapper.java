@@ -9,21 +9,14 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 @SuppressWarnings("deprecation")
-public class AverageFineMapper implements Mapper<Long, Ticket, String, Float>, HazelcastInstanceAware {
+public class AverageFineMapper implements Mapper<Long, Ticket, String, Float> {
 
     public AverageFineMapper(){
         // Necessary for hazelcast
     }
 
-    private transient IMap<String, Infraction> infractions;
-
     @Override
     public void map(Long i, Ticket t, Context<String, Float> context) {
-        context.emit(infractions.get(t.getInfractionCode()).getDescription(), t.getFineAmount());
-    }
-
-    @Override
-    public void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        this.infractions = hazelcastInstance.getMap(Constants.INFRACTION_MAP);
+        context.emit(t.getInfractionCode(), t.getFineAmount());
     }
 }
