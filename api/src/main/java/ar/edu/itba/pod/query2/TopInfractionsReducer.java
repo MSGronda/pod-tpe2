@@ -29,29 +29,16 @@ public class TopInfractionsReducer implements ReducerFactory<String, String, Lis
         @Override
         public List<String> finalizeReduce() {
             List<String> topInfractions = new ArrayList<>();
-            for (int i = 0; i < 3; i++){
-                if (infractions.isEmpty()){
-                    topInfractions.add("-");
-                }else {
-                    Map.Entry<String, Integer> maxEntry = null;
-                    for (Map.Entry<String, Integer> entry : infractions.entrySet()) { // O(n)
-                        if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
-                            maxEntry = entry;
-                        }
-                    }
-                    topInfractions.add(maxEntry.getKey()); // O(1)
-                    infractions.remove(maxEntry.getKey()); // O(1)
-                }
+            infractions.entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                    .limit(3)
+                    .forEach(entry -> topInfractions.add(entry.getKey()));
+
+            while (topInfractions.size() < 3) {
+                topInfractions.add("-");
             }
+
             return topInfractions;
-
-            // esta es otra que se me ocurrio pero como sortea es O(n logn)
-            // TODO: podemos testearla mas adelante
-            //infractions.entrySet().stream()
-                    //.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                    //.limit(3)
-                    //.forEach(e -> topInfractions.add(e.getKey()));
-
         }
     }
 
