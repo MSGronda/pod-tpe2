@@ -11,7 +11,6 @@ import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.config.GroupConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
 import com.hazelcast.mapreduce.KeyValueSource;
@@ -34,7 +33,7 @@ public class Client {
         logger.info("Hazelcast client started");
 
         IMap<String, Infraction> infractions = hz.getMap(Constants.INFRACTION_MAP);
-        MultiMap<Long, Ticket> tickets = hz.getMultiMap(Constants.TICKET_LIST);
+        IMap<Long, Ticket> tickets = hz.getMap(Constants.TICKET_LIST);
 
         logger.info("Loading data");
         timingsLogger.info("Loading data");
@@ -44,7 +43,7 @@ public class Client {
 
         JobTracker jobTracker = hz.getJobTracker(Constants.HZ_NAMESPACE);
 
-        KeyValueSource<Long, Ticket> source = KeyValueSource.fromMultiMap(hz.getMultiMap(Constants.TICKET_LIST));
+        KeyValueSource<Long, Ticket> source = KeyValueSource.fromMap(hz.getMap(Constants.TICKET_LIST));
 
         Job<Long, Ticket> job = jobTracker.newJob(source);
 
