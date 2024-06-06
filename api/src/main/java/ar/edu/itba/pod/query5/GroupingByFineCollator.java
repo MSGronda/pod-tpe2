@@ -20,7 +20,7 @@ public class GroupingByFineCollator implements Collator<Map.Entry<Integer, List<
 
     @Override
     public Map<Integer, Set<StringPair>> collate(Iterable<Map.Entry<Integer, List<StringPair>>> iterable) {
-        Map<Integer, Set<StringPair>> resp = new TreeMap<>();
+        Map<Integer, Set<StringPair>> resp = new TreeMap<>(Comparator.reverseOrder());
 
         iterable.forEach(entry -> {
             Set<StringPair> infractionsCodes = new TreeSet<>(cmp);

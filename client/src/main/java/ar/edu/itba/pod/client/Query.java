@@ -42,7 +42,7 @@ public enum Query {
     ONE(1, "Infraction;Tickets") {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
-            Map<String, Integer> results = job
+            Set<Map.Entry<String, Integer>> results = job
                     .mapper(new TotalInfractionsMapper())
                     .reducer(new TotalInfractionsReducer())
                     .submit(new TotalInfractionsCollator(hzInstance))
@@ -76,7 +76,7 @@ public enum Query {
 
             Query.writeOutput(TWO.getFilePath(arguments.getOutPath()),
                     TWO.csvHeader,
-                    results,
+                    results.entrySet(),
                     (key, value) -> {
                         StringBuilder sb = new StringBuilder().append(key);
                         value.forEach(s -> sb.append(";").append(s));
@@ -104,7 +104,7 @@ public enum Query {
 
             Query.writeOutput(THREE.getFilePath(arguments.getOutPath()),
                     THREE.csvHeader,
-                    results,
+                    results.entrySet(),
                     (key, value) -> String.format("%s;%.2f%%", key, value)
             );
         }
@@ -132,7 +132,7 @@ public enum Query {
             Query.writeOutput(
                     FOUR.getFilePath(arguments.getOutPath()),
                     FOUR.csvHeader,
-                    results,
+                    results.entrySet(),
                     (key, value) -> String.format("%s;%s;%d", key, value.getPlate(), value.getNum())
             );
         }
@@ -187,7 +187,7 @@ public enum Query {
             Query.writeOutput(
                     FIVE.getFilePath(arguments.getOutPath()),
                     FIVE.csvHeader,
-                    results,
+                    results.entrySet(),
                     (key, set) -> {
                         StringBuilder sb = new StringBuilder();
                         set.forEach(sp -> sb.append(key).append(";").append(sp.getValue1()).append(";").append(sp.getValue2()).append("\n"));
@@ -235,11 +235,11 @@ public enum Query {
         return outPathDir.resolve(String.format("query%d.csv", num));
     }
 
-    private static <K, V> void writeOutput(Path filePath, String csvHeader, Map<K, V> map, BiFunction<K, V, String> stringify) throws IOException {
+    private static <K, V> void writeOutput(Path filePath, String csvHeader, Set<Map.Entry<K, V>> set, BiFunction<K, V, String> stringify) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             writer.write(csvHeader);
             writer.newLine();
-            for (Map.Entry<K, V> entry : map.entrySet()) {
+            for (Map.Entry<K, V> entry : set) {
                 writer.write(stringify.apply(entry.getKey(), entry.getValue()));
                 writer.newLine();
             }

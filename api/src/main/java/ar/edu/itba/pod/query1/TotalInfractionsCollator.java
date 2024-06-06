@@ -6,23 +6,24 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Collator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class TotalInfractionsCollator implements Collator<Map.Entry<String, Integer>, Map<String, Integer>>  {
+public class TotalInfractionsCollator implements Collator<Map.Entry<String, Integer>, Set<Map.Entry<String, Integer>>>  {
 
     private final transient IMap<String, Infraction> infractions;
+
+    private static final Comparator<Map.Entry<String, Integer>> cmp = Comparator.comparingInt((Map.Entry<String, Integer> e) -> e.getValue()).reversed().thenComparing(Map.Entry::getKey);
 
     public TotalInfractionsCollator(HazelcastInstance hazelcastInstance){
         this.infractions = hazelcastInstance.getMap(Constants.INFRACTION_MAP);
     }
 
     @Override
-    public Map<String, Integer> collate(Iterable<Map.Entry<String, Integer>> iterable) {
-        Map<String, Integer> resp = new HashMap<>();
+    public Set<Map.Entry<String, Integer>> collate(Iterable<Map.Entry<String, Integer>> iterable) {
+        Set<Map.Entry<String, Integer>> resp = new TreeSet<>(cmp);
 
-        iterable.forEach(entry -> resp.put(infractions.get(entry.getKey()).getDescription(), entry.getValue()));
+        iterable.forEach(entry -> resp.add(new AbstractMap.SimpleEntry<>(infractions.get(entry.getKey()).getDescription(), entry.getValue())));
 
         return resp;
     }
