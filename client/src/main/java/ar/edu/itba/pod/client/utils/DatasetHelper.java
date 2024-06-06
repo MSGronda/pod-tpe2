@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -33,7 +32,7 @@ public class DatasetHelper {
             IMap<String, Infraction> infractions,
             CsvReaderType infractionsReaderType,
             String ticketsPath,
-            IMap<Long, Ticket> tickets,
+            MultiMap<Long, Ticket> tickets,
             CsvReaderType ticketReaderType,
             Query query
     ){
@@ -50,8 +49,6 @@ public class DatasetHelper {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        AtomicLong key = new AtomicLong();
-
         ticketReaderType.reader.readCsv(ticketsPath, line -> {
 
             String[] fields = line.split(";");
@@ -61,7 +58,7 @@ public class DatasetHelper {
             LocalDate date = LocalDate.parse(fields[1], dateFormatter);
 
             tickets.put(
-                    key.incrementAndGet(),
+                    date.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC),
                     query.getNYCTicket(
                         fields[0],
                         date,
@@ -79,7 +76,7 @@ public class DatasetHelper {
             IMap<String, Infraction> infractions,
             CsvReaderType infractionsReaderType,
             String ticketsPath,
-            IMap<Long, Ticket> tickets,
+            MultiMap<Long, Ticket> tickets,
             CsvReaderType ticketReaderType,
             Query query
     ){
@@ -96,7 +93,6 @@ public class DatasetHelper {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        AtomicLong key = new AtomicLong();
         ticketReaderType.reader.readCsv(ticketsPath, line -> {
             String[] fields = line.split(";");
 
@@ -104,7 +100,7 @@ public class DatasetHelper {
 
             LocalDateTime date = LocalDateTime.parse(fields[0], dateFormatter);
             tickets.put(
-                    key.incrementAndGet(),
+                    date.toEpochSecond(ZoneOffset.UTC),
                     query.getCHITicket(
                         date,
                         fields[1],

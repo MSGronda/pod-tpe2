@@ -18,6 +18,12 @@ public class Server {
 
         Config hzConfig = new Config();
 
+        MultiMapConfig mmConfig = new MultiMapConfig()
+                .setValueCollectionType(MultiMapConfig.ValueCollectionType.LIST)
+                .setName(Constants.TICKET_LIST);
+
+        hzConfig.addMultiMapConfig(mmConfig);
+
         // Deshabilitamos el logging molesto
         hzConfig.setProperty("hazelcast.logging.type", "none");
 

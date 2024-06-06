@@ -12,7 +12,7 @@ import com.hazelcast.core.MultiMap;
 public enum City {
     CHI {
         @Override
-        public void loadData(Argument arguments, IMap<String, Infraction> infractions, IMap<Long, Ticket> tickets) {
+        public void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets) {
                 DatasetHelper.loadCHIData(
                         String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name()),
                         infractions,
@@ -25,7 +25,7 @@ public enum City {
         }
     }, NYC {
         @Override
-        public void loadData(Argument arguments, IMap<String, Infraction> infractions, IMap<Long, Ticket> tickets) {
+        public void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets) {
             DatasetHelper.loadNYCData(
                     String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name()),
                     infractions,
@@ -38,5 +38,5 @@ public enum City {
         }
     };
 
-    public abstract void loadData(Argument arguments, IMap<String, Infraction> infractions, IMap<Long, Ticket> tickets);
+    public abstract void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets);
 }
