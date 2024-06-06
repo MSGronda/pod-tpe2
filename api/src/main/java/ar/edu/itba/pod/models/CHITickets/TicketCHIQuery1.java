@@ -16,6 +16,10 @@ public class TicketCHIQuery1 extends Ticket implements DataSerializable {
 
     private String violationCode;
 
+    public TicketCHIQuery1(){
+        // Necesario para hazelcast
+    }
+
     public TicketCHIQuery1(LocalDateTime issueDate, String violationCode) {
         this.issueDate = issueDate;
         this.violationCode = violationCode;

@@ -17,6 +17,10 @@ public class TicketNYCQuery3 extends Ticket implements DataSerializable {
 
     private String issuingAgency;
 
+    public TicketNYCQuery3(){
+        // Necesario para hazelcast
+    }
+
     public TicketNYCQuery3(LocalDate issueDate, float fineAmount, String issuingAgency) {
         this.issueDate = issueDate;
         this.fineAmount = fineAmount;

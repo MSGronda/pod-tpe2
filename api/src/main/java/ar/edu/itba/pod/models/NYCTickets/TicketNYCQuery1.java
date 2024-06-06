@@ -16,6 +16,10 @@ public class TicketNYCQuery1 extends Ticket implements DataSerializable {
 
     private int infractionCode;
 
+    public TicketNYCQuery1(){
+        // Necesario para hazelcast
+    }
+
     public TicketNYCQuery1(LocalDate issueDate, int infractionCode) {
         this.issueDate = issueDate;
         this.infractionCode = infractionCode;
