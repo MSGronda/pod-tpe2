@@ -31,11 +31,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public enum Query {
@@ -190,7 +192,14 @@ public enum Query {
                     results.entrySet(),
                     (key, set) -> {
                         StringBuilder sb = new StringBuilder();
-                        set.forEach(sp -> sb.append(key).append(";").append(sp.getValue1()).append(";").append(sp.getValue2()).append("\n"));
+                        Iterator<StringPair> iterator = set.iterator();
+                        while (iterator.hasNext()){
+                            StringPair sp = iterator.next();
+                            sb.append(key).append(';').append(sp.getValue1()).append(';').append(sp.getValue2());
+                            if(iterator.hasNext()){
+                                sb.append('\n');
+                            }
+                        }
                         return sb.toString();
                     }
             );

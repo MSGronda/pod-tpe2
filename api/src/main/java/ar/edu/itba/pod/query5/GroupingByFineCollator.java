@@ -36,8 +36,10 @@ public class GroupingByFineCollator implements Collator<Map.Entry<Integer, List<
                     infractionsCodes.add(new StringPair(s2, s1));
                 }
             });
+            if(!infractionsCodes.isEmpty()){
+                resp.put(entry.getKey(), infractionsCodes);
+            }
 
-            resp.put(entry.getKey(), infractionsCodes);
         });
 
 
