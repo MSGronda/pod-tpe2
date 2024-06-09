@@ -5,15 +5,17 @@ import com.hazelcast.mapreduce.Combiner;
 import com.hazelcast.mapreduce.CombinerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class PlatesMostInfractionsByCountyCombinerFactory implements CombinerFactory<String, String, StringLongPair> {
+@SuppressWarnings("deprecation")
+public class PlatesMostInfractionsByCountyCombinerFactory implements CombinerFactory<String, String, List<StringLongPair>> {
     @Override
-    public Combiner<String, StringLongPair> newCombiner(String s) {
+    public Combiner<String, List<StringLongPair>> newCombiner(String s) {
         return new PlatesMostInfractionsByCountyCombiner();
     }
 
-    private static class PlatesMostInfractionsByCountyCombiner extends Combiner<String, StringLongPair> {
+    private static class PlatesMostInfractionsByCountyCombiner extends Combiner<String, List<StringLongPair>> {
         private final Map<String, Long> map = new HashMap<>();
         private static final Long ZERO = 0L;
 
@@ -23,17 +25,10 @@ public class PlatesMostInfractionsByCountyCombinerFactory implements CombinerFac
         }
 
         @Override
-        public StringLongPair finalizeChunk() {
-            long max = 0;
-            String maxPlate = null;
-            for (Map.Entry<String, Long> entry : map.entrySet()) {
-                if (entry.getValue() > max) {
-                    max = entry.getValue();
-                    maxPlate = entry.getKey();
-                }
-            }
+        public List<StringLongPair> finalizeChunk() {
+            final List<StringLongPair> list = map.entrySet().stream().map(x -> StringLongPair.of(x.getKey(), x.getValue())).toList();
             map.clear();
-            return StringLongPair.of(maxPlate, max);
+            return list;
         }
     }
 }

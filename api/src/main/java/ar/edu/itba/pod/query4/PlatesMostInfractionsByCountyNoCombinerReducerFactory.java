@@ -7,10 +7,11 @@ import com.hazelcast.mapreduce.ReducerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class PlatesMostInfractionsByCountyNoCombinerReducerFactory implements ReducerFactory<String, String, StringLongPair> {
     @Override
     public Reducer<String, StringLongPair> newReducer(String s) {
-        return null;
+        return new PlatesMostInfractionsByCountyReducer();
     }
 
     private static class PlatesMostInfractionsByCountyReducer extends Reducer<String, StringLongPair> {

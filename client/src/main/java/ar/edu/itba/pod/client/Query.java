@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public enum Query {
@@ -128,6 +127,8 @@ public enum Query {
                     .mapper(new PlatesMostInfractionsByCountyMapper())
                     .combiner(new PlatesMostInfractionsByCountyCombinerFactory())
                     .reducer(new PlatesMostInfractionsByCountyReducerFactory())
+                    // Testing on only one node, no combiner is faster
+//                    .reducer(new PlatesMostInfractionsByCountyNoCombinerReducerFactory())
                     .submit(new PlatesMostInfractionsByCountyCollator())
                     .get();
 
@@ -141,12 +142,12 @@ public enum Query {
 
         @Override
         public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
-            return new TicketCHIQuery4(issueDate, licensePlateNumber, communityArea);
+            return new TicketCHIQuery4(licensePlateNumber, communityArea);
         }
 
         @Override
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
-            return new TicketNYCQuery4(issueDate, plate, countyName);
+            return new TicketNYCQuery4(plate, countyName);
         }
 
 
