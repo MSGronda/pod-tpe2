@@ -6,12 +6,10 @@ import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class TicketNYCQuery4 extends Ticket implements DataSerializable {
     private String plate;
-    private LocalDate issueDate;
 
     private String countyName;
 
@@ -19,8 +17,7 @@ public class TicketNYCQuery4 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketNYCQuery4(LocalDate issueDate, String plate, String countyName) {
-        this.issueDate = issueDate;
+    public TicketNYCQuery4(String plate, String countyName) {
         this.plate = plate;
         this.countyName = countyName;
     }
@@ -53,28 +50,18 @@ public class TicketNYCQuery4 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochDay());
         objectDataOutput.writeUTF(plate);
         objectDataOutput.writeUTF(countyName);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDate.ofEpochDay(objectDataInput.readLong());
         plate = objectDataInput.readUTF();
         countyName = objectDataInput.readUTF();
     }
 
     public void setPlate(String plate) {
         this.plate = plate;
-    }
-
-    public LocalDate getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDate issueDate) {
-        this.issueDate = issueDate;
     }
 
     public String getCountyName() {
@@ -89,11 +76,11 @@ public class TicketNYCQuery4 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketNYCQuery4 that)) return false;
-        return Objects.equals(plate, that.plate) && Objects.equals(issueDate, that.issueDate) && Objects.equals(countyName, that.countyName);
+        return Objects.equals(plate, that.plate) && Objects.equals(countyName, that.countyName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(plate, issueDate, countyName);
+        return Objects.hash(plate, countyName);
     }
 }

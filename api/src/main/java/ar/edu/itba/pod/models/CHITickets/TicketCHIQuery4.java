@@ -6,12 +6,10 @@ import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class TicketCHIQuery4 extends Ticket implements DataSerializable {
 
-    private LocalDateTime issueDate;
     private String licensePlateNumber;
 
     private String communityArea;
@@ -20,14 +18,9 @@ public class TicketCHIQuery4 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketCHIQuery4(LocalDateTime issueDate, String licensePlateNumber, String communityArea) {
-        this.issueDate = issueDate;
+    public TicketCHIQuery4(String licensePlateNumber, String communityArea) {
         this.licensePlateNumber = licensePlateNumber;
         this.communityArea = communityArea;
-    }
-
-    public LocalDateTime getIssueDate() {
-        return issueDate;
     }
 
     public String getLicensePlateNumber() {
@@ -36,10 +29,6 @@ public class TicketCHIQuery4 extends Ticket implements DataSerializable {
 
     public String getCommunityArea() {
         return communityArea;
-    }
-
-    public void setIssueDate(LocalDateTime issueDate) {
-        this.issueDate = issueDate;
     }
 
     public void setLicensePlateNumber(String licensePlateNumber) {
@@ -77,14 +66,12 @@ public class TicketCHIQuery4 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochSecond(java.time.ZoneOffset.UTC));
         objectDataOutput.writeUTF(licensePlateNumber);
         objectDataOutput.writeUTF(communityArea);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDateTime.ofEpochSecond(objectDataInput.readLong(), 0, java.time.ZoneOffset.UTC);
         licensePlateNumber = objectDataInput.readUTF();
         communityArea = objectDataInput.readUTF();
     }
@@ -93,11 +80,11 @@ public class TicketCHIQuery4 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketCHIQuery4 that)) return false;
-        return Objects.equals(issueDate, that.issueDate) && Objects.equals(licensePlateNumber, that.licensePlateNumber) && Objects.equals(communityArea, that.communityArea);
+        return Objects.equals(licensePlateNumber, that.licensePlateNumber) && Objects.equals(communityArea, that.communityArea);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issueDate, licensePlateNumber, communityArea);
+        return Objects.hash(licensePlateNumber, communityArea);
     }
 }
