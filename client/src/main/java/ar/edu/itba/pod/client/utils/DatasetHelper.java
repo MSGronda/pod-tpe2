@@ -28,10 +28,10 @@ public class DatasetHelper {
     private static final Logger logger = LoggerFactory.getLogger(DatasetHelper.class);
 
     public static void loadNYCData(
-            String infractionsPath,
+            Path infractionsPath,
             IMap<String, Infraction> infractions,
             CsvReaderType infractionsReaderType,
-            String ticketsPath,
+            Path ticketsPath,
             MultiMap<Long, Ticket> tickets,
             CsvReaderType ticketReaderType,
             Query query
@@ -72,10 +72,10 @@ public class DatasetHelper {
     }
 
     public static void loadCHIData(
-            String infractionsPath,
+            Path infractionsPath,
             IMap<String, Infraction> infractions,
             CsvReaderType infractionsReaderType,
-            String ticketsPath,
+            Path ticketsPath,
             MultiMap<Long, Ticket> tickets,
             CsvReaderType ticketReaderType,
             Query query
@@ -123,11 +123,12 @@ public class DatasetHelper {
         private final CsvReader reader;
     }
     private interface CsvReader {
-        void readCsv(String filepath, Consumer<String> consumer);
+        void readCsv(Path filepath, Consumer<String> consumer);
     }
 
     private static final CsvReader parallelReader = (filepath, consumer) -> {
-        try (Stream<String> reader = Files.lines(Path.of(filepath))) {
+        logger.info("File path {}", filepath);
+        try (Stream<String> reader = Files.lines(filepath)) {
             reader.skip(SKIP_CSV_LINES).parallel().forEach(consumer);
         } catch (IOException e) {
             logger.error("Error reading file", e);
@@ -135,7 +136,8 @@ public class DatasetHelper {
     };
 
     private static final CsvReader sequentialReader = (filepath, consumer) -> {
-        try (Stream<String> reader = Files.lines(Path.of(filepath)) ){
+        logger.info("File path {}", filepath);
+        try (Stream<String> reader = Files.lines(filepath) ){
             reader.skip(SKIP_CSV_LINES).forEach(consumer);
         } catch (IOException e) {
             logger.error("Error reading file", e);
