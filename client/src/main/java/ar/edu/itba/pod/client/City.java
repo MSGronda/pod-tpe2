@@ -14,10 +14,10 @@ public enum City {
         @Override
         public void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets) {
                 DatasetHelper.loadCHIData(
-                        String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name()),
+                        arguments.getInPath().resolve(String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name())),
                         infractions,
                         DatasetHelper.CsvReaderType.SEQUENTIAL,
-                        String.format(Constants.TICKETS_FILENAME_FMT, this.name()),
+                        arguments.getInPath().resolve(String.format(Constants.TICKETS_FILENAME_FMT, this.name())),
                         tickets,
                         DatasetHelper.CsvReaderType.PARALLEL,
                         arguments.getQuery()
@@ -27,10 +27,10 @@ public enum City {
         @Override
         public void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets) {
             DatasetHelper.loadNYCData(
-                    String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name()),
+                    arguments.getInPath().resolve(String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name())),
                     infractions,
                     DatasetHelper.CsvReaderType.SEQUENTIAL,
-                    String.format(Constants.TICKETS_FILENAME_FMT, this.name()),
+                    arguments.getInPath().resolve(String.format(Constants.TICKETS_FILENAME_FMT, this.name())),
                     tickets,
                     DatasetHelper.CsvReaderType.PARALLEL,
                     arguments.getQuery()
