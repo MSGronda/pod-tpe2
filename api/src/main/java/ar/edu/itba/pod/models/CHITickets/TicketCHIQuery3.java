@@ -8,9 +8,9 @@ import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Objects;
 
 public class TicketCHIQuery3 extends Ticket implements DataSerializable {
-    private LocalDateTime issueDate;
     private String unitDescription;
     private int fine;
 
@@ -18,8 +18,7 @@ public class TicketCHIQuery3 extends Ticket implements DataSerializable {
         // Necessary for hazelcast
     }
 
-    public TicketCHIQuery3(LocalDateTime issueDate, String unitDescription, int fine) {
-        this.issueDate = issueDate;
+    public TicketCHIQuery3(String unitDescription, int fine) {
         this.unitDescription = unitDescription;
         this.fine = fine;
     }
@@ -51,15 +50,34 @@ public class TicketCHIQuery3 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochSecond(ZoneOffset.UTC));
         objectDataOutput.writeUTF(unitDescription);
         objectDataOutput.writeInt(fine);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDateTime.ofEpochSecond(objectDataInput.readLong(), 0, ZoneOffset.UTC);
         unitDescription = objectDataInput.readUTF();
         fine = objectDataInput.readInt();
+    }
+
+    public void setFine(int fine) {
+        this.fine = fine;
+    }
+
+    public void setUnitDescription(String unitDescription) {
+        this.unitDescription = unitDescription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TicketCHIQuery3 that = (TicketCHIQuery3) o;
+        return fine == that.fine && Objects.equals(unitDescription, that.unitDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(unitDescription, fine);
     }
 }

@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class TicketNYCQuery2 extends Ticket implements DataSerializable {
-    private LocalDate issueDate;
-
     private int infractionCode;
 
     private String countyName;
@@ -20,8 +18,7 @@ public class TicketNYCQuery2 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketNYCQuery2(LocalDate issueDate, int infractionCode, String countyName) {
-        this.issueDate = issueDate;
+    public TicketNYCQuery2(int infractionCode, String countyName) {
         this.infractionCode = infractionCode;
         this.countyName = countyName;
     }
@@ -54,24 +51,14 @@ public class TicketNYCQuery2 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochDay());
         objectDataOutput.writeInt(infractionCode);
         objectDataOutput.writeUTF(countyName);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDate.ofEpochDay(objectDataInput.readLong());
         infractionCode = objectDataInput.readInt();
         countyName = objectDataInput.readUTF();
-    }
-
-    public LocalDate getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDate issueDate) {
-        this.issueDate = issueDate;
     }
 
     public void setInfractionCode(int infractionCode) {
@@ -90,11 +77,11 @@ public class TicketNYCQuery2 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketNYCQuery2 that)) return false;
-        return infractionCode == that.infractionCode && Objects.equals(issueDate, that.issueDate) && Objects.equals(countyName, that.countyName);
+        return infractionCode == that.infractionCode && Objects.equals(countyName, that.countyName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issueDate, infractionCode, countyName);
+        return Objects.hash(infractionCode, countyName);
     }
 }

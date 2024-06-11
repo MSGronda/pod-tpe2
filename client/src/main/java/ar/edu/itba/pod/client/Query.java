@@ -59,12 +59,12 @@ public enum Query {
 
         @Override
         public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
-            return new TicketCHIQuery1(issueDate, violationCode);
+            return new TicketCHIQuery1(violationCode);
         }
 
         @Override
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
-            return new TicketNYCQuery1(issueDate, infractionCode);
+            return new TicketNYCQuery1(infractionCode);
         }
     }, TWO(2, "County;InfractionTop1;InfractionTop2;InfractionTop3") {
         @Override
@@ -87,12 +87,12 @@ public enum Query {
 
         @Override
         public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
-            return new TicketCHIQuery2(issueDate, violationCode, communityArea);
+            return new TicketCHIQuery2(violationCode, communityArea);
         }
 
         @Override
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
-            return new TicketNYCQuery2(issueDate, infractionCode, countyName);
+            return new TicketNYCQuery2(infractionCode, countyName);
         }
     }, THREE(3, "Issuing Agency;Percentage") {
         @Override
@@ -112,12 +112,12 @@ public enum Query {
 
         @Override
         public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
-            return new TicketCHIQuery3(issueDate, unitDescription, fine);
+            return new TicketCHIQuery3(unitDescription, fine);
         }
 
         @Override
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
-            return new TicketNYCQuery3(issueDate, fineAmount, issuingAgency);
+            return new TicketNYCQuery3(fineAmount, issuingAgency);
         }
     }, FOUR(4, "County;Plate;Tickets") {
         @Override
@@ -208,12 +208,12 @@ public enum Query {
 
         @Override
         public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
-            return new TicketCHIQuery5(issueDate, violationCode, fine);
+            return new TicketCHIQuery5(violationCode, fine);
         }
 
         @Override
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
-            return new TicketNYCQuery5(issueDate, infractionCode, fineAmount);
+            return new TicketNYCQuery5(infractionCode, fineAmount);
         }
 
     };

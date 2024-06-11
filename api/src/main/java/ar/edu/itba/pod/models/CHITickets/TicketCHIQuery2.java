@@ -11,8 +11,6 @@ import java.time.ZoneOffset;
 import java.util.Objects;
 
 public class TicketCHIQuery2 extends Ticket implements DataSerializable {
-    private LocalDateTime issueDate;
-
     private String violationCode;
 
     private String communityArea;
@@ -21,8 +19,7 @@ public class TicketCHIQuery2 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketCHIQuery2(LocalDateTime issueDate, String violationCode, String communityArea) {
-        this.issueDate = issueDate;
+    public TicketCHIQuery2(String violationCode, String communityArea) {
         this.violationCode = violationCode;
         this.communityArea = communityArea;
     }
@@ -55,24 +52,14 @@ public class TicketCHIQuery2 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochSecond(ZoneOffset.UTC));
         objectDataOutput.writeUTF(violationCode);
         objectDataOutput.writeUTF(communityArea);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDateTime.ofEpochSecond(objectDataInput.readLong(), 0, ZoneOffset.UTC);
         violationCode = objectDataInput.readUTF();
         communityArea = objectDataInput.readUTF();
-    }
-
-    public LocalDateTime getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDateTime issueDate) {
-        this.issueDate = issueDate;
     }
 
     public String getViolationCode() {
@@ -95,11 +82,11 @@ public class TicketCHIQuery2 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketCHIQuery2 that)) return false;
-        return Objects.equals(issueDate, that.issueDate) && Objects.equals(violationCode, that.violationCode) && Objects.equals(communityArea, that.communityArea);
+        return Objects.equals(violationCode, that.violationCode) && Objects.equals(communityArea, that.communityArea);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issueDate, violationCode, communityArea);
+        return Objects.hash(violationCode, communityArea);
     }
 }

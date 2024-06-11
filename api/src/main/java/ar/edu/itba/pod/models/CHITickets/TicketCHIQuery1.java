@@ -12,7 +12,6 @@ import java.util.Objects;
 
 
 public class TicketCHIQuery1 extends Ticket implements DataSerializable {
-    private LocalDateTime issueDate;
 
     private String violationCode;
 
@@ -20,8 +19,7 @@ public class TicketCHIQuery1 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketCHIQuery1(LocalDateTime issueDate, String violationCode) {
-        this.issueDate = issueDate;
+    public TicketCHIQuery1(String violationCode) {
         this.violationCode = violationCode;
     }
 
@@ -53,22 +51,12 @@ public class TicketCHIQuery1 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochSecond(ZoneOffset.UTC));
         objectDataOutput.writeUTF(violationCode);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDateTime.ofEpochSecond(objectDataInput.readLong(), 0, ZoneOffset.UTC);
         violationCode = objectDataInput.readUTF();
-    }
-
-    public LocalDateTime getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDateTime issueDate) {
-        this.issueDate = issueDate;
     }
 
     public String getViolationCode() {
@@ -83,11 +71,11 @@ public class TicketCHIQuery1 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketCHIQuery1 that)) return false;
-        return Objects.equals(issueDate, that.issueDate) && Objects.equals(violationCode, that.violationCode);
+        return Objects.equals(violationCode, that.violationCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issueDate, violationCode);
+        return Objects.hash(violationCode);
     }
 }

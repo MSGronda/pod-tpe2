@@ -10,9 +10,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class TicketNYCQuery3 extends Ticket implements DataSerializable {
-
-    private LocalDate issueDate;
-
     private float fineAmount;
 
     private String issuingAgency;
@@ -21,8 +18,7 @@ public class TicketNYCQuery3 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketNYCQuery3(LocalDate issueDate, float fineAmount, String issuingAgency) {
-        this.issueDate = issueDate;
+    public TicketNYCQuery3(float fineAmount, String issuingAgency) {
         this.fineAmount = fineAmount;
         this.issuingAgency = issuingAgency;
     }
@@ -54,24 +50,14 @@ public class TicketNYCQuery3 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochDay());
         objectDataOutput.writeFloat(fineAmount);
         objectDataOutput.writeUTF(issuingAgency);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDate.ofEpochDay(objectDataInput.readLong());
         fineAmount = objectDataInput.readFloat();
         issuingAgency = objectDataInput.readUTF();
-    }
-
-    public LocalDate getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDate issueDate) {
-        this.issueDate = issueDate;
     }
 
     public void setFineAmount(float fineAmount) {
@@ -90,11 +76,11 @@ public class TicketNYCQuery3 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketNYCQuery3 that)) return false;
-        return Float.compare(fineAmount, that.fineAmount) == 0 && Objects.equals(issueDate, that.issueDate) && Objects.equals(issuingAgency, that.issuingAgency);
+        return Float.compare(fineAmount, that.fineAmount) == 0 && Objects.equals(issuingAgency, that.issuingAgency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issueDate, fineAmount, issuingAgency);
+        return Objects.hash(fineAmount, issuingAgency);
     }
 }

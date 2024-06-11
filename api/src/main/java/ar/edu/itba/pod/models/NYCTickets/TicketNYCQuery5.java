@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class TicketNYCQuery5 extends Ticket implements DataSerializable {
-    private LocalDate issueDate;
     private int infractionCode;
     private float fineAmount;
 
@@ -18,8 +17,7 @@ public class TicketNYCQuery5 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketNYCQuery5(LocalDate issueDate, int infractionCode, float fineAmount) {
-        this.issueDate = issueDate;
+    public TicketNYCQuery5(int infractionCode, float fineAmount) {
         this.infractionCode = infractionCode;
         this.fineAmount = fineAmount;
     }
@@ -52,24 +50,14 @@ public class TicketNYCQuery5 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochDay());
         objectDataOutput.writeInt(infractionCode);
         objectDataOutput.writeFloat(fineAmount);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDate.ofEpochDay(objectDataInput.readLong());
         infractionCode = objectDataInput.readInt();
         fineAmount = objectDataInput.readFloat();
-    }
-
-    public LocalDate getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDate issueDate) {
-        this.issueDate = issueDate;
     }
 
     public void setInfractionCode(int infractionCode) {
@@ -84,11 +72,11 @@ public class TicketNYCQuery5 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketNYCQuery5 that)) return false;
-        return infractionCode == that.infractionCode && Float.compare(fineAmount, that.fineAmount) == 0 && Objects.equals(issueDate, that.issueDate);
+        return infractionCode == that.infractionCode && Float.compare(fineAmount, that.fineAmount) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issueDate, infractionCode, fineAmount);
+        return Objects.hash(infractionCode, fineAmount);
     }
 }

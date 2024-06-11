@@ -11,8 +11,6 @@ import java.time.ZoneOffset;
 import java.util.Objects;
 
 public class TicketCHIQuery5 extends Ticket implements DataSerializable {
-    private LocalDateTime issueDate;
-
     private String violationCode;
 
     private int fine;
@@ -21,8 +19,7 @@ public class TicketCHIQuery5 extends Ticket implements DataSerializable {
         // Necesario para hazelcast
     }
 
-    public TicketCHIQuery5(LocalDateTime issueDate, String violationCode, int fine) {
-        this.issueDate = issueDate;
+    public TicketCHIQuery5(String violationCode, int fine) {
         this.violationCode = violationCode;
         this.fine = fine;
     }
@@ -55,24 +52,14 @@ public class TicketCHIQuery5 extends Ticket implements DataSerializable {
 
     @Override
     public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
-        objectDataOutput.writeLong(issueDate.toEpochSecond(ZoneOffset.UTC));
         objectDataOutput.writeUTF(violationCode);
         objectDataOutput.writeInt(fine);
     }
 
     @Override
     public void readData(ObjectDataInput objectDataInput) throws IOException {
-        issueDate = LocalDateTime.ofEpochSecond(objectDataInput.readLong(), 0, ZoneOffset.UTC);
         violationCode = objectDataInput.readUTF();
         fine = objectDataInput.readInt();
-    }
-
-    public LocalDateTime getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDateTime issueDate) {
-        this.issueDate = issueDate;
     }
 
     public String getViolationCode() {
@@ -95,11 +82,11 @@ public class TicketCHIQuery5 extends Ticket implements DataSerializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketCHIQuery5 that)) return false;
-        return fine == that.fine && Objects.equals(issueDate, that.issueDate) && Objects.equals(violationCode, that.violationCode);
+        return fine == that.fine && Objects.equals(violationCode, that.violationCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issueDate, violationCode, fine);
+        return Objects.hash(violationCode, fine);
     }
 }
