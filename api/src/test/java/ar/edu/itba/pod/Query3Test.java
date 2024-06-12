@@ -25,21 +25,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class Query3Test {
 
-    private static final List<String> agencies = List.of("Traffic", "Parking", "Police");
+    private static final List<String> agencies = List.of("Traffic", "Parking", "Police", "Sanitation");
 
     private static final List<Integer> fines = List.of(50, 30, 40);
 
     private static final Map<String, Long> AGENCY_COLLECTION_MAP = Map.of(
             agencies.get(0), 70L,
             agencies.get(1), 30L,
-            agencies.get(2), 40L
+            agencies.get(2), 40L,
+            agencies.get(3), 10L
     );
 
-    private static final int SUM = 70 + 30 + 40;
+    private static final int SUM = 70 + 30 + 40 + 10;
     private static final Map<String, Double> AGENCY_PERCENTAGE_MAP = Map.of(
             agencies.get(0), Math.floor(70 / (double) SUM * 100 * 100) / 100,
             agencies.get(1), Math.floor(30 / (double) SUM * 100 * 100) / 100,
-            agencies.get(2), Math.floor(40 / (double) SUM * 100 * 100) / 100
+            agencies.get(2), Math.floor(40 / (double) SUM * 100 * 100) / 100,
+            agencies.get(3), Math.floor(10 / (double) SUM * 100 * 100) / 100
     );
 
     @Mock
@@ -82,12 +84,13 @@ public class Query3Test {
 
     @Test
     public void agencyCollectionCollatorTest() {
-        int n = 2;
+        int n = 3;
         Collator<Map.Entry<String, Long>, Map<String, Double>> collator = new AgencyCollectionCollator(n);
 
         Map<String, Double> result = collator.collate(AGENCY_COLLECTION_MAP.entrySet());
         assertEquals(n, result.size());
         assertEquals(result.get(agencies.get(0)), AGENCY_PERCENTAGE_MAP.get(agencies.get(0)));
+        assertEquals(result.get(agencies.get(1)), AGENCY_PERCENTAGE_MAP.get(agencies.get(1)));
         assertEquals(result.get(agencies.get(2)), AGENCY_PERCENTAGE_MAP.get(agencies.get(2)));
 
         Double value = null;
