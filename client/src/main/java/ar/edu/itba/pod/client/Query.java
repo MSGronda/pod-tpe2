@@ -97,7 +97,7 @@ public enum Query {
     }, THREE(3, "Issuing Agency;Percentage") {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
-            Map<String, Double> results = job
+            Set<Map.Entry<String, Double>> results = job
                     .mapper(new AgencyCollectionMapper())
                     .reducer(new AgencyCollectionReducer())
                     .submit(new AgencyCollectionCollator(arguments.getN()))
@@ -105,7 +105,7 @@ public enum Query {
 
             Query.writeOutput(THREE.getFilePath(arguments.getOutPath()),
                     THREE.csvHeader,
-                    results.entrySet(),
+                    results,
                     (key, value) -> String.format("%s;%.2f%%", key, value)
             );
         }

@@ -1,53 +1,36 @@
 package ar.edu.itba.pod.query3;
 
 import com.hazelcast.mapreduce.Collator;
+import com.sun.source.tree.Tree;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
-public class AgencyCollectionCollator implements Collator<Map.Entry<String, Long>, Map<String, Double>> {
+public class AgencyCollectionCollator implements Collator<Map.Entry<String, Long>, Set<Map.Entry<String, Double>>> {
     private final int n;
+
+    public static final Comparator<Map.Entry<String, Double>> CMP = Comparator.comparingDouble((Map.Entry<String, Double> e) -> e.getValue()).reversed().thenComparing(Map.Entry::getKey);
     public AgencyCollectionCollator(final int n) {
         this.n = n;
     }
 
     @Override
-    public Map<String, Double> collate(Iterable<Map.Entry<String, Long>> iterable) {
+    public Set<Map.Entry<String, Double>> collate(Iterable<Map.Entry<String, Long>> iterable) {
         long total = 0;
-        Map<String, Double> map = new HashMap<>();
+
+        Set<Map.Entry<String, Double>> result = new TreeSet<>(CMP);
+
         for (Map.Entry<String, Long> entry : iterable) {
             total += entry.getValue();
         }
+
         for (Map.Entry<String, Long> entry : iterable) {
             double percentage = (double) entry.getValue() / total * 100;
             percentage = Math.floor(percentage * 100) / 100; // Truncar a 2 decimales
-            map.put(entry.getKey(), percentage);
+            result.add(new AbstractMap.SimpleEntry<>(entry.getKey(), percentage));
         }
 
-        // Se lo ordena por valor
-        List<Map.Entry<String, Double>> list = new ArrayList<>(map.entrySet());
-
-        list.sort(new Comparator<Map.Entry<String, Double>>() {
-            @Override
-            public int compare(Map.Entry<String, Double> entry1, Map.Entry<String, Double> entry2) {
-                int comparison = entry2.getValue().compareTo(entry1.getValue());
-                if (comparison != 0) {
-                    return comparison;
-                } else {
-                    return entry1.getKey().compareTo(entry2.getKey());
-                }
-            }
-        });
-
-        Map<String, Double> sortedMap = new LinkedHashMap<>();
-        int i = 0;
-        for (Map.Entry<String, Double> entry : list) {
-            sortedMap.put(entry.getKey(), entry.getValue());
-            i++;
-            if (i == n) { // Se encarga de poner solo los primeros n elementos
-                break;
-            }
-        }
-        return sortedMap;
+        return result.stream().limit(n).collect(Collectors.toCollection(() -> new TreeSet<>(CMP)));
     }
 }

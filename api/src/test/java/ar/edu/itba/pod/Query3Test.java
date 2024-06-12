@@ -18,6 +18,7 @@ import com.hazelcast.mapreduce.Context;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -85,16 +86,19 @@ public class Query3Test {
     @Test
     public void agencyCollectionCollatorTest() {
         int n = 3;
-        Collator<Map.Entry<String, Long>, Map<String, Double>> collator = new AgencyCollectionCollator(n);
+        Collator<Map.Entry<String, Long>, Set<Map.Entry<String, Double>>> collator = new AgencyCollectionCollator(n);
 
-        Map<String, Double> result = collator.collate(AGENCY_COLLECTION_MAP.entrySet());
+        Set<Map.Entry<String, Double>> result = collator.collate(AGENCY_COLLECTION_MAP.entrySet());
         assertEquals(n, result.size());
-        assertEquals(result.get(agencies.get(0)), AGENCY_PERCENTAGE_MAP.get(agencies.get(0)));
-        assertEquals(result.get(agencies.get(1)), AGENCY_PERCENTAGE_MAP.get(agencies.get(1)));
-        assertEquals(result.get(agencies.get(2)), AGENCY_PERCENTAGE_MAP.get(agencies.get(2)));
+
+        assertTrue(result.containsAll(List.of(
+                Map.entry(agencies.get(0), AGENCY_PERCENTAGE_MAP.get(agencies.get(0))),
+                Map.entry(agencies.get(1), AGENCY_PERCENTAGE_MAP.get(agencies.get(1))),
+                Map.entry(agencies.get(2), AGENCY_PERCENTAGE_MAP.get(agencies.get(2))
+        ))));
 
         Double value = null;
-        for (Map.Entry<String, Double> entry : result.entrySet()) {
+        for (Map.Entry<String, Double> entry : result) {
             if (value == null) {
                 value = entry.getValue();
             } else {
