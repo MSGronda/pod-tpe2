@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class Query3Test {
@@ -88,5 +89,14 @@ public class Query3Test {
         assertEquals(n, result.size());
         assertEquals(result.get(agencies.get(0)), AGENCY_PERCENTAGE_MAP.get(agencies.get(0)));
         assertEquals(result.get(agencies.get(2)), AGENCY_PERCENTAGE_MAP.get(agencies.get(2)));
+
+        Double value = null;
+        for (Map.Entry<String, Double> entry : result.entrySet()) {
+            if (value == null) {
+                value = entry.getValue();
+            } else {
+                assertTrue(value >= entry.getValue());
+            }
+        }
     }
 }
