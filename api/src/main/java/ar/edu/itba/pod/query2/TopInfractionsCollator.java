@@ -6,6 +6,8 @@ import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Collator;
+
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,17 @@ public class TopInfractionsCollator implements Collator<Map.Entry<String, List<S
         Map<String, List<String>> map = new java.util.TreeMap<>();
         for (Map.Entry<String, List<String>> entry : values) {
             List<String> topInfractions = entry.getValue();
-            List<String> topInfractionsDescription = topInfractions.stream().map(infractionCode -> infractions.get(infractionCode).getDescription()).toList();
+            //List<String> topInfractionsDescription = topInfractions.stream().filter(i -> !i.equals("-")).map(infractionCode -> infractions.get(infractionCode).getDescription()).toList();
+
+            List<String> topInfractionsDescription = new java.util.ArrayList<>();
+            for (String infractionCode : topInfractions) {
+                if (!infractionCode.equals("-")) {
+                    topInfractionsDescription.add(infractions.get(infractionCode).getDescription());
+                }else{
+                    topInfractionsDescription.add("-");
+                }
+            }
+
             map.put(entry.getKey(), topInfractionsDescription);
         }
         return map;
