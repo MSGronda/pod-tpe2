@@ -127,7 +127,6 @@ public class DatasetHelper {
     }
 
     private static final CsvReader parallelReader = (filepath, consumer) -> {
-        logger.info("File path {}", filepath);
         try (Stream<String> reader = Files.lines(filepath)) {
             reader.skip(SKIP_CSV_LINES).parallel().forEach(consumer);
         } catch (IOException e) {
@@ -136,7 +135,6 @@ public class DatasetHelper {
     };
 
     private static final CsvReader sequentialReader = (filepath, consumer) -> {
-        logger.info("File path {}", filepath);
         try (Stream<String> reader = Files.lines(filepath) ){
             reader.skip(SKIP_CSV_LINES).forEach(consumer);
         } catch (IOException e) {
