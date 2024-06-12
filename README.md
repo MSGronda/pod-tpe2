@@ -37,8 +37,10 @@ sh scripts/generate_sources.sh
 Now, we can run the server. To do this, first we must navigate to the directory where we extracted the server tar file, and then we can run the shell script used to start a Hazelcast node. This will start it, listening on the port 5701.
 
 ```shell
-cd server/target/tpe2-g11-server-1.0-SNAPSHOT && sh run-server.sh
+cd server/target/tpe2-g11-server-1.0-SNAPSHOT && sh run-server.sh [ -Dinteface="<mask>" ]
 ```
+Where:
+- `-Dinterface` is a subnet mask which limits the IP addresses of other server instances which it'll try and connect to.
 
 ## 4 Running the Clients
 

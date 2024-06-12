@@ -4,6 +4,7 @@ import com.hazelcast.mapreduce.Collator;
 
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class AgencyCollectionCollator implements Collator<Map.Entry<String, Long>, Map<String, Double>> {
     private final int n;
     public AgencyCollectionCollator(final int n) {

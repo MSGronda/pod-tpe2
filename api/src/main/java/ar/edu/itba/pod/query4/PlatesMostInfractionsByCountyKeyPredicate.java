@@ -5,6 +5,7 @@ import com.hazelcast.mapreduce.KeyPredicate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+@SuppressWarnings("deprecation")
 /* We are assuming that the key is an epoch */
 public class PlatesMostInfractionsByCountyKeyPredicate implements KeyPredicate<Long> {
     private final LocalDateTime from;

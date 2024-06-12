@@ -5,6 +5,7 @@ import com.hazelcast.mapreduce.Collator;
 
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class PlatesMostInfractionsByCountyCollator implements Collator<Map.Entry<String, StringLongPair>, Map<String, StringLongPair>> {
     @Override
     public Map<String, StringLongPair> collate(Iterable<Map.Entry<String, StringLongPair>> values) {

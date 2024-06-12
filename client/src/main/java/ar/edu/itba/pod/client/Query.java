@@ -111,6 +111,13 @@ public enum Query {
         }
 
         @Override
+        public void checkQueryArguments(Argument arguments, StringBuilder errors) {
+            if (arguments.getN() <= 0) {
+                errors.append("-Dn=\\d+ with n > 0, is required for this query\n");
+            }
+        }
+
+        @Override
         public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
             return new TicketCHIQuery3(unitDescription, fine);
         }

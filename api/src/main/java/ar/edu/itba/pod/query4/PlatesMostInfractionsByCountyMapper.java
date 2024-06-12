@@ -9,6 +9,7 @@ import com.hazelcast.mapreduce.Mapper;
 *
 * We receive a (LocalDateTime, Ticket) entry, and emit (String County, String Patent)
 */
+@SuppressWarnings("deprecation")
 public class PlatesMostInfractionsByCountyMapper implements Mapper<Long, Ticket, String, String> {
 
     @Override
