@@ -120,6 +120,27 @@ public class Query5Test {
                 new StringPair(VIOLATION_DESCRIPTIONS.get(1), VIOLATION_DESCRIPTIONS.get(2)),
                 new StringPair(VIOLATION_DESCRIPTIONS.get(0), VIOLATION_DESCRIPTIONS.get(2))
         )));
+
+        Integer prevInt = output.entrySet().iterator().next().getKey();
+
+        for(Map.Entry<Integer, Set<StringPair>> entry : output.entrySet()){
+            if(prevInt < entry.getKey()){
+                Assert.fail("Infraction count ordering incorrect");
+            }
+            StringPair prevStringPair = entry.getValue().iterator().next();
+
+            for(StringPair pair : entry.getValue()){
+                if(pair.getValue1().compareTo(pair.getValue2()) > 0){
+                    Assert.fail("Infraction pair ordering incorrect");
+                }
+                if(prevStringPair.getValue1().compareTo(pair.getValue1()) > 0){
+                    Assert.fail("Infraction pair set ordering incorrect");
+                }
+                prevStringPair = pair;
+            }
+
+            prevInt = entry.getKey();
+        }
     }
 
 }
