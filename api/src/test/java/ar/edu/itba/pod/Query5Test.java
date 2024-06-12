@@ -1,18 +1,13 @@
 package ar.edu.itba.pod;
 
 import ar.edu.itba.pod.models.CHITickets.TicketCHIQuery5;
-import ar.edu.itba.pod.models.InfractionCHI;
-import ar.edu.itba.pod.models.InfractionNYC;
 import ar.edu.itba.pod.models.StringPair;
 import ar.edu.itba.pod.query5.*;
-import ar.edu.itba.pod.utils.DummyIMap;
-import com.hazelcast.client.proxy.ClientMapProxy;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.HazelcastInstanceAware;
-import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Collator;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Reducer;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -21,16 +16,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.*;
 
 
+import static ar.edu.itba.pod.utils.Common.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("deprecation")
 @RunWith(MockitoJUnitRunner.class)
 public class Query5Test {
-    private static final String VIOLATION_CODE = "A(@#*J#($";
-    private static final List<String> VIOLATION_CODES = List.of("awsh", "213i4", "3i492");
-    private static final List<String> VIOLATION_DESCRIPTIONS = List.of("Drunk driving", "Driving without sunglasses", "Parked 10 feet from the curve");
-    private static final IMap<Object, Object> VIOLATION_CODE_DESC_MAP = setupViolationCodeDescMap();
     private static final int FINE_AMOUNT = 50;
     private static final float AVERAGE_FINE = 40f;
     private static final int FINE_GROUP = 0;
@@ -39,15 +31,6 @@ public class Query5Test {
     @Mock
     private HazelcastInstance hazelcastInstance;
 
-    private static IMap<Object, Object> setupViolationCodeDescMap(){
-        IMap<Object, Object> resp = new DummyIMap<>();
-
-        resp.put(VIOLATION_CODES.get(0), new InfractionCHI(VIOLATION_CODES.get(0), VIOLATION_DESCRIPTIONS.get(0)));
-        resp.put(VIOLATION_CODES.get(1), new InfractionCHI(VIOLATION_CODES.get(1), VIOLATION_DESCRIPTIONS.get(1)));
-        resp.put(VIOLATION_CODES.get(2), new InfractionCHI(VIOLATION_CODES.get(2), VIOLATION_DESCRIPTIONS.get(2)));
-
-        return resp;
-    }
 
     private static final Map<Integer, List<StringPair>> GROUPED_BY_FINE_MAP = Map.of(
             FINE_GROUP, List.of(
@@ -131,8 +114,8 @@ public class Query5Test {
         when(hazelcastInstance.getMap(Constants.INFRACTION_MAP)).thenReturn(VIOLATION_CODE_DESC_MAP);
 
         Collator<Map.Entry<Integer, List<StringPair>>, Map<Integer, Set<StringPair>>> collator = new GroupingByFineCollator(hazelcastInstance);
-
-        assertTrue(collator.collate(GROUPED_BY_FINE_MAP.entrySet()).get(FINE_GROUP).containsAll(List.of(
+        Map<Integer, Set<StringPair>> output = collator.collate(GROUPED_BY_FINE_MAP.entrySet());
+        assertTrue(output.get(FINE_GROUP).containsAll(List.of(
                 new StringPair(VIOLATION_DESCRIPTIONS.get(1), VIOLATION_DESCRIPTIONS.get(0)),
                 new StringPair(VIOLATION_DESCRIPTIONS.get(1), VIOLATION_DESCRIPTIONS.get(2)),
                 new StringPair(VIOLATION_DESCRIPTIONS.get(0), VIOLATION_DESCRIPTIONS.get(2))
