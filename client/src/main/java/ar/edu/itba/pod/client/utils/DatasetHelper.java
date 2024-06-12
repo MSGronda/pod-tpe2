@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -32,7 +34,7 @@ public class DatasetHelper {
             IMap<String, Infraction> infractions,
             CsvReaderType infractionsReaderType,
             Path ticketsPath,
-            MultiMap<Long, Ticket> tickets,
+            IMap<Long, Ticket> tickets,
             CsvReaderType ticketReaderType,
             Query query
     ){
@@ -49,6 +51,9 @@ public class DatasetHelper {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        HashMap<Long, Ticket> batch = new HashMap<>();
+        AtomicLong id = new AtomicLong(0);
+
         ticketReaderType.reader.readCsv(ticketsPath, line -> {
 
             String[] fields = line.split(";");
@@ -57,8 +62,8 @@ public class DatasetHelper {
 
             LocalDate date = LocalDate.parse(fields[1], dateFormatter);
 
-            tickets.put(
-                    date.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC),
+            batch.put(
+                    id.getAndIncrement(),
                     query.getNYCTicket(
                         fields[0],
                         date,
@@ -68,6 +73,11 @@ public class DatasetHelper {
                         fields[5]
                     )
             );
+
+            if(batch.size() == 10000){
+                tickets.putAll(batch);
+                batch.clear();
+            }
         });
     }
 
@@ -76,7 +86,7 @@ public class DatasetHelper {
             IMap<String, Infraction> infractions,
             CsvReaderType infractionsReaderType,
             Path ticketsPath,
-            MultiMap<Long, Ticket> tickets,
+            IMap<Long, Ticket> tickets,
             CsvReaderType ticketReaderType,
             Query query
     ){

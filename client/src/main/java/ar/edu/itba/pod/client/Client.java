@@ -34,7 +34,7 @@ public class Client {
         logger.info("Hazelcast client started");
 
         IMap<String, Infraction> infractions = hz.getMap(Constants.INFRACTION_MAP);
-        MultiMap<Long, Ticket> tickets = hz.getMultiMap(Constants.TICKET_LIST);
+        IMap<Long, Ticket> tickets = hz.getMap(Constants.TICKET_LIST);
 
         logger.info("Loading data");
         timingsLogger.info("Loading data");
@@ -44,7 +44,7 @@ public class Client {
 
         JobTracker jobTracker = hz.getJobTracker(Constants.HZ_NAMESPACE);
 
-        KeyValueSource<Long, Ticket> source = KeyValueSource.fromMultiMap(tickets);
+        KeyValueSource<Long, Ticket> source = KeyValueSource.fromMap(tickets);
 
         Job<Long, Ticket> job = jobTracker.newJob(source);
 
