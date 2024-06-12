@@ -1,6 +1,13 @@
+<div style="display: flex; justify-content: space-between;">
+  <div>
+    <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white">
+    <img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white">
+  </div>
+</div>
+
 # Programación de Objetos Distribuidos - TPE2
 
-This project is a ...
+This project is a distributed system that uses Hazelcast to perform map-reduce operations on a dataset of traffic tickets and infractions. The dataset is divided into two cities: Chicago and New York City.
 
 ## 1. Prerequisites
 
