@@ -4,6 +4,7 @@ import ar.edu.itba.pod.models.StringLongPair;
 import com.hazelcast.mapreduce.Combiner;
 import com.hazelcast.mapreduce.CombinerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,8 @@ public class PlatesMostInfractionsByCountyCombinerFactory implements CombinerFac
 
         @Override
         public List<StringLongPair> finalizeChunk() {
-            final List<StringLongPair> list = map.entrySet().stream().map(x -> StringLongPair.of(x.getKey(), x.getValue())).toList();
+            final List<StringLongPair> list = new ArrayList<>();
+            map.entrySet().stream().map(x -> StringLongPair.of(x.getKey(), x.getValue())).forEach(list::add);
             map.clear();
             return list;
         }
