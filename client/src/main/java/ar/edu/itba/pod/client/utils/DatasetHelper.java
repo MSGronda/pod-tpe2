@@ -66,7 +66,7 @@ public class DatasetHelper {
             String[] fields = line.split(";");
 
             // Si la linea del csv esta mal o no tiene un infractionCode valido
-            if (fields.length != NUM_FIELDS_TICKET || !localInfractions.containsKey(fields[2])) {
+            if (fields.length != NUM_FIELDS_TICKET || (query.getValidateTicketsInfractionCode() && !localInfractions.containsKey(fields[2]))) {
                 return;
             }
 
