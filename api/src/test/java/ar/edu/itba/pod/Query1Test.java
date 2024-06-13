@@ -4,6 +4,7 @@ import ar.edu.itba.pod.models.CHITickets.TicketCHIQuery1;
 import ar.edu.itba.pod.query1.TotalInfractionsCollator;
 import ar.edu.itba.pod.query1.TotalInfractionsMapper;
 import ar.edu.itba.pod.query1.TotalInfractionsReducer;
+import ar.edu.itba.pod.utils.Constants;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.mapreduce.Collator;
 import com.hazelcast.mapreduce.Context;

@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.Constants;
+import ar.edu.itba.pod.utils.Constants;
 import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.models.CHITickets.*;
 import ar.edu.itba.pod.models.NYCTickets.*;
@@ -43,7 +43,7 @@ import java.util.function.BiFunction;
 
 @SuppressWarnings("deprecation")
 public enum Query {
-    ONE(1, "Infraction;Tickets") {
+    ONE(1, "Infraction;Tickets", true) {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Set<Map.Entry<String, Integer>> results = job
@@ -69,7 +69,7 @@ public enum Query {
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
             return new TicketNYCQuery1(infractionCode);
         }
-    }, TWO(2, "County;InfractionTop1;InfractionTop2;InfractionTop3") {
+    }, TWO(2, "County;InfractionTop1;InfractionTop2;InfractionTop3", true) {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, List<String>> results = job
@@ -97,7 +97,7 @@ public enum Query {
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
             return new TicketNYCQuery2(infractionCode, countyName);
         }
-    }, THREE(3, "Issuing Agency;Percentage") {
+    }, THREE(3, "Issuing Agency;Percentage", false) {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Set<Map.Entry<String, Double>> results = job
@@ -129,7 +129,7 @@ public enum Query {
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
             return new TicketNYCQuery3(fineAmount, issuingAgency);
         }
-    }, FOUR(4, "County;Plate;Tickets") {
+    }, FOUR(4, "County;Plate;Tickets", false) {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, StringLongPair> results = job
@@ -172,7 +172,7 @@ public enum Query {
                 errors.append("-Dto=DD/MM/YYYY is a required parameter for this query\n");
             }
         }
-    }, FIVE(5, "Group;Infraction A;Infraction B") {
+    }, FIVE(5, "Group;Infraction A;Infraction B", true) {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, Float> partialResults = job
@@ -229,10 +229,12 @@ public enum Query {
 
     private final int num;
     private final String csvHeader;
+    private final boolean validateTicketsInfractionCode;
 
-    Query(int num, String csvHeader) {
+    Query(int num, String csvHeader, boolean validateTicketsInfractionCode) {
         this.num = num;
         this.csvHeader = csvHeader;
+        this.validateTicketsInfractionCode = validateTicketsInfractionCode;
     }
 
     public static Query fromNum(int value) {
@@ -263,6 +265,10 @@ public enum Query {
                 writer.newLine();
             }
         }
+    }
+
+    public boolean getValidateTicketsInfractionCode() {
+        return validateTicketsInfractionCode;
     }
 
     public int getNum() {

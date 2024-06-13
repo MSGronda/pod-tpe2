@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.client.utils;
 
-import ar.edu.itba.pod.client.City;
+import ar.edu.itba.pod.client.dataset.City;
 import ar.edu.itba.pod.client.Query;
 
 import java.nio.file.Path;

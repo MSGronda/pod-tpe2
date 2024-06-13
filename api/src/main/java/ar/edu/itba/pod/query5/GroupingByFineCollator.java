@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.query5;
 
-import ar.edu.itba.pod.Constants;
+import ar.edu.itba.pod.utils.Constants;
 import ar.edu.itba.pod.models.StringPair;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import com.hazelcast.core.HazelcastInstance;

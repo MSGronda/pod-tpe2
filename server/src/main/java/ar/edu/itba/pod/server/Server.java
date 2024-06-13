@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.server;
 
-import ar.edu.itba.pod.Constants;
+import ar.edu.itba.pod.utils.Constants;
 import com.hazelcast.config.*;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -17,12 +17,6 @@ public class Server {
         logger.info("Initializing Hazelcast node...");
 
         Config hzConfig = new Config();
-
-        MultiMapConfig mmConfig = new MultiMapConfig()
-                .setValueCollectionType(MultiMapConfig.ValueCollectionType.LIST)
-                .setName(Constants.TICKET_LIST);
-
-        hzConfig.addMultiMapConfig(mmConfig);
 
         // Deshabilitamos el logging molesto
         hzConfig.setProperty("hazelcast.logging.type", "none");

@@ -1,4 +1,4 @@
-package ar.edu.itba.pod;
+package ar.edu.itba.pod.utils;
 
 public class Constants {
     public static final String HZ_NAME = "G11";
