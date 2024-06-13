@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class Query5Test {
     private static final int FINE_AMOUNT = 50;
-    private static final float AVERAGE_FINE = 40f;
-    private static final int FINE_GROUP = 0;
-    private static final List<Float> FINES = List.of(50f,30f,40f,40f,30f,50f);
+    private static final float AVERAGE_FINE = 140f;
+    private static final int FINE_GROUP = 100;
+    private static final List<Float> FINES = List.of(150f,130f,140f,140f,130f,150f);
 
     @Mock
     private HazelcastInstance hazelcastInstance;
