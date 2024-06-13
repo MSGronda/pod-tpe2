@@ -16,7 +16,10 @@ import ar.edu.itba.pod.query2.TopInfractionsReducer;
 import ar.edu.itba.pod.query3.AgencyCollectionCollator;
 import ar.edu.itba.pod.query3.AgencyCollectionMapper;
 import ar.edu.itba.pod.query3.AgencyCollectionReducer;
-import ar.edu.itba.pod.query4.*;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyCollator;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyCombinerFactory;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyMapper;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyReducerFactory;
 import ar.edu.itba.pod.query5.*;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
@@ -130,8 +133,7 @@ public enum Query {
         @Override
         public void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException {
             Map<String, StringLongPair> results = job
-                    .keyPredicate(new PlatesMostInfractionsByCountyKeyPredicate(arguments.getFrom(), arguments.getTo()))
-                    .mapper(new PlatesMostInfractionsByCountyMapper())
+                    .mapper(new PlatesMostInfractionsByCountyMapper(arguments.getFrom(), arguments.getTo()))
                     .combiner(new PlatesMostInfractionsByCountyCombinerFactory())
                     .reducer(new PlatesMostInfractionsByCountyReducerFactory())
                     // Testing on only one node, no combiner is faster
@@ -149,12 +151,12 @@ public enum Query {
 
         @Override
         public Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea) {
-            return new TicketCHIQuery4(licensePlateNumber, communityArea);
+            return new TicketCHIQuery4(licensePlateNumber, communityArea, issueDate);
         }
 
         @Override
         public Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency) {
-            return new TicketNYCQuery4(plate, countyName);
+            return new TicketNYCQuery4(plate, issueDate, countyName);
         }
 
 

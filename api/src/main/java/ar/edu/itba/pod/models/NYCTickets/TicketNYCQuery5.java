@@ -6,7 +6,7 @@ import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class TicketNYCQuery5 extends Ticket implements DataSerializable {
@@ -22,6 +22,10 @@ public class TicketNYCQuery5 extends Ticket implements DataSerializable {
         this.fineAmount = fineAmount;
     }
 
+    @Override
+    public LocalDateTime getDate() {
+        return null;
+    }
 
     @Override
     public String getInfractionCode() {

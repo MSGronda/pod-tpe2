@@ -7,7 +7,6 @@ import com.hazelcast.nio.serialization.DataSerializable;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Objects;
 
 public class TicketCHIQuery5 extends Ticket implements DataSerializable {
@@ -24,6 +23,10 @@ public class TicketCHIQuery5 extends Ticket implements DataSerializable {
         this.fine = fine;
     }
 
+    @Override
+    public LocalDateTime getDate() {
+        return null;
+    }
 
     @Override
     public String getInfractionCode() {

@@ -2,7 +2,10 @@ package ar.edu.itba.pod;
 
 import ar.edu.itba.pod.models.CHITickets.TicketCHIQuery4;
 import ar.edu.itba.pod.models.StringLongPair;
-import ar.edu.itba.pod.query4.*;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyCollator;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyMapper;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyNoCombinerReducerFactory;
+import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyReducerFactory;
 import com.hazelcast.mapreduce.Collator;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Reducer;
@@ -12,11 +15,10 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("deprecation")
 @RunWith(MockitoJUnitRunner.class)
@@ -47,27 +49,11 @@ public class Query4Test {
     }
 
     @Test
-    public void KeyPredicateTest() {
-        LocalDateTime now = LocalDateTime.now();
-        PlatesMostInfractionsByCountyKeyPredicate keyPredicate = new PlatesMostInfractionsByCountyKeyPredicate(now.minusDays(3), now.plusDays(3));
-
-        assertTrue(keyPredicate.evaluate(now.toEpochSecond(ZoneOffset.UTC)));
-
-        assertTrue(keyPredicate.evaluate(now.minusDays(2).toEpochSecond(ZoneOffset.UTC)));
-
-        assertTrue(keyPredicate.evaluate(now.plusDays(2).toEpochSecond(ZoneOffset.UTC)));
-
-        assertFalse(keyPredicate.evaluate(now.minusDays(7).toEpochSecond(ZoneOffset.UTC)));
-
-        assertFalse(keyPredicate.evaluate(now.plusDays(7).toEpochSecond(ZoneOffset.UTC)));
-    }
-
-    @Test
     public void MapperTest() {
-        PlatesMostInfractionsByCountyMapper mapper = new PlatesMostInfractionsByCountyMapper();
+        PlatesMostInfractionsByCountyMapper mapper = new PlatesMostInfractionsByCountyMapper(LocalDateTime.MIN, LocalDateTime.MAX);
         PlatesMostInfractionsByCountyContext context = new PlatesMostInfractionsByCountyContext();
 
-        mapper.map(1L, new TicketCHIQuery4(LICENSE_PLATE, COUNTY), context);
+        mapper.map(1L, new TicketCHIQuery4(LICENSE_PLATE, COUNTY, LocalDateTime.now()), context);
 
         assertEquals(COUNTY, context.s1);
         assertEquals(LICENSE_PLATE, context.s2);
