@@ -3,6 +3,7 @@ package ar.edu.itba.pod;
 import ar.edu.itba.pod.models.CHITickets.TicketCHIQuery5;
 import ar.edu.itba.pod.models.StringPair;
 import ar.edu.itba.pod.query5.*;
+import ar.edu.itba.pod.utils.Constants;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.mapreduce.Collator;
 import com.hazelcast.mapreduce.Context;

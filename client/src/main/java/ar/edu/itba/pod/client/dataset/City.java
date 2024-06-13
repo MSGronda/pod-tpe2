@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.client;
+package ar.edu.itba.pod.client.dataset;
 
 import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.client.utils.Constants;

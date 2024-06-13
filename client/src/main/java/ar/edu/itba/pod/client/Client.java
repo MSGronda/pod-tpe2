@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.Constants;
+import ar.edu.itba.pod.utils.Constants;
 import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.client.utils.ArgumentCollector;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
