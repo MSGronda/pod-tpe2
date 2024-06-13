@@ -12,6 +12,7 @@ public class TopInfractionsMapper implements Mapper<Long, Ticket, String, String
         // Necessary for hazelcast
     }
 
+    // Mappea county vs codigo de infraccion
     @Override
     public void map(Long i, Ticket t, Context<String, String> context) {
         context.emit(t.getCounty(),  t.getInfractionCode());

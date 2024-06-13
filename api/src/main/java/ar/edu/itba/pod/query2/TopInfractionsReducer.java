@@ -5,6 +5,8 @@ import com.hazelcast.mapreduce.ReducerFactory;
 
 import java.util.*;
 
+
+
 @SuppressWarnings("deprecation")
 public class TopInfractionsReducer implements ReducerFactory<String, String, List<String>> {
 
@@ -26,6 +28,9 @@ public class TopInfractionsReducer implements ReducerFactory<String, String, Lis
             infractions.merge(value, 1, Integer::sum);
         }
 
+        // Creamos una nueva lista y la llenamos con las 3 infracciones mas comunes del county
+        // Para ello ordenamos nuestro mapa por valor y tomamos los 3 primeros
+        // En caso de que no haya 3 infracciones, completamos con "-"
         @Override
         public List<String> finalizeReduce() {
             List<String> topInfractions = new ArrayList<>();

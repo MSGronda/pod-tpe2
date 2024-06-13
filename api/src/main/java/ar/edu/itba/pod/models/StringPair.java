@@ -7,7 +7,7 @@ import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
 import java.util.Objects;
 
-// Hacemos un stringPair (en vez de una Pair generico) por la serializacion. Necesitamos saber bien
+// Hacemos un StringPair (en vez de una Pair generico) por la serializacion. Necesitamos saber bien
 // el tipo de dato y que se pueda serializar.
 public class StringPair implements DataSerializable {
     private String value1;

@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.query3;
 
 import com.hazelcast.mapreduce.Collator;
-import com.sun.source.tree.Tree;
 
 import java.util.*;
 import java.util.stream.Collectors;
