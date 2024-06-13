@@ -40,8 +40,11 @@ public class DatasetHelper {
             TicketCreator ticketCreator,
             DateTimeFormatter dateFormatter
     ){
-
-        Map<String, Infraction> localInfractions = new HashMap<>();       // Lo usamos para filtrar los tickets que no tienen infraction asociado
+        // Lo usamos para filtrar los tickets que no tienen infraction asociado.
+        // Usamos una coleccion local para no tener que acceder al IMap del cluster (lo
+        // cual lo haria muy lento). Considerando que el localInfractions y infractions IMap
+        // van a tener los mismos datos, no hace ninguna diferencia en terminos de consistencia.
+        Map<String, Infraction> localInfractions = new HashMap<>();
 
         // Cargamos los infractions
         sequentialReader.readCsv(infractionsPath, line -> {

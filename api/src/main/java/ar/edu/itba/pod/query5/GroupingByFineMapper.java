@@ -11,7 +11,10 @@ public class GroupingByFineMapper implements Mapper<String, Float, Integer, Stri
 
     @Override
     public void map(String infractionName, Float fineAverage, Context<Integer, String> context) {
-        context.emit(((int) Math.floor(fineAverage / 100)) * 100, infractionName);
-    }
+        int group = ((int) Math.floor(fineAverage / 100)) * 100;
 
+        if (group > 0){
+            context.emit(group, infractionName);
+        }
+    }
 }
