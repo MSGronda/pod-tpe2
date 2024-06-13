@@ -31,7 +31,7 @@ public class TopInfractionsCollator implements Collator<Map.Entry<String, List<S
 
             List<String> topInfractionsDescription = new java.util.ArrayList<>();
             for (String infractionCode : topInfractions) {
-                if (!infractionCode.equals("-") || !infractions.containsKey(infractionCode)){
+                if (!infractionCode.equals("-") || infractions.containsKey(infractionCode)){
                     topInfractionsDescription.add(infractions.get(infractionCode).getDescription());
                 }else{
                     topInfractionsDescription.add("-");
