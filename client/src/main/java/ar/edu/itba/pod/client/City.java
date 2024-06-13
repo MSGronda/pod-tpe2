@@ -6,37 +6,38 @@ import ar.edu.itba.pod.client.utils.DatasetHelper;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
 import com.hazelcast.core.IMap;
-import com.hazelcast.core.MultiMap;
 
 
 public enum City {
     CHI {
         @Override
-        public void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets) {
-                DatasetHelper.loadCHIData(
+        public void loadData(Argument arguments, IMap<String, Infraction> infractions, IMap<Long, Ticket> tickets) {
+                DatasetHelper.loadTicketBatched(
                         arguments.getInPath().resolve(String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name())),
                         infractions,
-                        DatasetHelper.CsvReaderType.SEQUENTIAL,
+                        DatasetHelper.chiInfractionCreator,
                         arguments.getInPath().resolve(String.format(Constants.TICKETS_FILENAME_FMT, this.name())),
                         tickets,
-                        DatasetHelper.CsvReaderType.PARALLEL,
-                        arguments.getQuery()
+                        arguments.getQuery(),
+                        DatasetHelper.chiTicketCreator,
+                        DatasetHelper.chiFormatter
                 );
         }
     }, NYC {
         @Override
-        public void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets) {
-            DatasetHelper.loadNYCData(
+        public void loadData(Argument arguments, IMap<String, Infraction> infractions, IMap<Long, Ticket> tickets) {
+            DatasetHelper.loadTicketBatched(
                     arguments.getInPath().resolve(String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name())),
                     infractions,
-                    DatasetHelper.CsvReaderType.SEQUENTIAL,
+                    DatasetHelper.nycInfractionCreator,
                     arguments.getInPath().resolve(String.format(Constants.TICKETS_FILENAME_FMT, this.name())),
                     tickets,
-                    DatasetHelper.CsvReaderType.PARALLEL,
-                    arguments.getQuery()
+                    arguments.getQuery(),
+                    DatasetHelper.nycTicketCreator,
+                    DatasetHelper.nycFormatter
             );
         }
     };
 
-    public abstract void loadData(Argument arguments, IMap<String, Infraction> infractions, MultiMap<Long, Ticket> tickets);
+    public abstract void loadData(Argument arguments, IMap<String, Infraction> infractions, IMap<Long, Ticket> tickets);
 }
