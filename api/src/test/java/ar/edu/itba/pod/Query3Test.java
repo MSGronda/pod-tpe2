@@ -6,13 +6,12 @@ import ar.edu.itba.pod.query3.AgencyCollectionMapper;
 import ar.edu.itba.pod.query3.AgencyCollectionReducer;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.mapreduce.Collator;
+import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Reducer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import com.hazelcast.mapreduce.Context;
 
 import java.util.List;
 import java.util.Map;
@@ -93,7 +92,7 @@ public class Query3Test {
                 Map.entry(agencies.get(0), AGENCY_PERCENTAGE_MAP.get(agencies.get(0))),
                 Map.entry(agencies.get(1), AGENCY_PERCENTAGE_MAP.get(agencies.get(1))),
                 Map.entry(agencies.get(2), AGENCY_PERCENTAGE_MAP.get(agencies.get(2))
-        ))));
+                ))));
 
         Double value = null;
         for (Map.Entry<String, Double> entry : result) {

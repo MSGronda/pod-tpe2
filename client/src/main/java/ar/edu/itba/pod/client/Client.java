@@ -1,10 +1,10 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.utils.Constants;
 import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.client.utils.ArgumentCollector;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
 import ar.edu.itba.pod.models.abstractClasses.Ticket;
+import ar.edu.itba.pod.utils.Constants;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;

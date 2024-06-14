@@ -11,7 +11,7 @@ public class AverageFineReducer implements ReducerFactory<String, Float, Float> 
         return new AverageFineReducer.FineReducer();
     }
 
-    private static class FineReducer extends Reducer<Float, Float>{
+    private static class FineReducer extends Reducer<Float, Float> {
         private double sum;
         private long count;
 

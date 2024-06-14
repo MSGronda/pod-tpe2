@@ -14,11 +14,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.*;
-
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static ar.edu.itba.pod.utils.Common.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("deprecation")
@@ -27,7 +29,7 @@ public class Query5Test {
     private static final int FINE_AMOUNT = 50;
     private static final float AVERAGE_FINE = 140f;
     private static final int FINE_GROUP = 100;
-    private static final List<Float> FINES = List.of(150f,130f,140f,140f,130f,150f);
+    private static final List<Float> FINES = List.of(150f, 130f, 140f, 140f, 130f, 150f);
 
     @Mock
     private HazelcastInstance hazelcastInstance;
@@ -35,30 +37,32 @@ public class Query5Test {
 
     private static final Map<Integer, List<StringPair>> GROUPED_BY_FINE_MAP = Map.of(
             FINE_GROUP, List.of(
-                    new StringPair(VIOLATION_CODES.get(1),VIOLATION_CODES.get(0)),
-                    new StringPair(VIOLATION_CODES.get(2),VIOLATION_CODES.get(0)),
-                    new StringPair(VIOLATION_CODES.get(2),VIOLATION_CODES.get(1))
+                    new StringPair(VIOLATION_CODES.get(1), VIOLATION_CODES.get(0)),
+                    new StringPair(VIOLATION_CODES.get(2), VIOLATION_CODES.get(0)),
+                    new StringPair(VIOLATION_CODES.get(2), VIOLATION_CODES.get(1))
             )
     );
     private static final Map<Integer, List<StringPair>> GROUPED_BY_FINE_WITH_DESC_MAP = Map.of(
             FINE_GROUP, List.of(
-                    new StringPair(VIOLATION_DESCRIPTIONS.get(1),VIOLATION_DESCRIPTIONS.get(0)),
-                    new StringPair(VIOLATION_DESCRIPTIONS.get(2),VIOLATION_DESCRIPTIONS.get(0)),
-                    new StringPair(VIOLATION_DESCRIPTIONS.get(2),VIOLATION_DESCRIPTIONS.get(1))
+                    new StringPair(VIOLATION_DESCRIPTIONS.get(1), VIOLATION_DESCRIPTIONS.get(0)),
+                    new StringPair(VIOLATION_DESCRIPTIONS.get(2), VIOLATION_DESCRIPTIONS.get(0)),
+                    new StringPair(VIOLATION_DESCRIPTIONS.get(2), VIOLATION_DESCRIPTIONS.get(1))
             )
     );
 
     private static class AverageFineContext implements Context<String, Float> {
         private String s;
         private float f;
+
         @Override
         public void emit(String s, Float f) {
             this.s = s;
             this.f = f;
         }
     }
+
     @Test
-    public void averageFineMapperTest(){
+    public void averageFineMapperTest() {
         AverageFineMapper mapper = new AverageFineMapper();
         AverageFineContext context = new AverageFineContext();
 
@@ -69,7 +73,7 @@ public class Query5Test {
     }
 
     @Test
-    public void averageFineReducerTest(){
+    public void averageFineReducerTest() {
         Reducer<Float, Float> reducer = new AverageFineReducer().newReducer(VIOLATION_CODE);
 
         reducer.beginReduce();
@@ -81,6 +85,7 @@ public class Query5Test {
     private static class GroupingByFineContext implements Context<Integer, String> {
         private int i;
         private String s;
+
         @Override
         public void emit(Integer i, String s) {
             this.s = s;
@@ -89,7 +94,7 @@ public class Query5Test {
     }
 
     @Test
-    public void groupingByNameMapperTest(){
+    public void groupingByNameMapperTest() {
         GroupingByFineMapper mapper = new GroupingByFineMapper();
         GroupingByFineContext context = new GroupingByFineContext();
 
@@ -100,7 +105,7 @@ public class Query5Test {
     }
 
     @Test
-    public void groupingByNameReducerTest(){
+    public void groupingByNameReducerTest() {
         Reducer<String, List<StringPair>> reducer = new GroupingByFineReducer().newReducer(FINE_GROUP);
 
         reducer.beginReduce();
@@ -111,7 +116,7 @@ public class Query5Test {
     }
 
     @Test
-    public void groupingByNameCollatorTest(){
+    public void groupingByNameCollatorTest() {
         when(hazelcastInstance.getMap(Constants.INFRACTION_MAP)).thenReturn(VIOLATION_CODE_DESC_MAP);
 
         Collator<Map.Entry<Integer, List<StringPair>>, Map<Integer, Set<StringPair>>> collator = new GroupingByFineCollator(hazelcastInstance);
@@ -124,17 +129,17 @@ public class Query5Test {
 
         Integer prevInt = output.entrySet().iterator().next().getKey();
 
-        for(Map.Entry<Integer, Set<StringPair>> entry : output.entrySet()){
-            if(prevInt < entry.getKey()){
+        for (Map.Entry<Integer, Set<StringPair>> entry : output.entrySet()) {
+            if (prevInt < entry.getKey()) {
                 Assert.fail("Infraction count ordering incorrect");
             }
             StringPair prevStringPair = entry.getValue().iterator().next();
 
-            for(StringPair pair : entry.getValue()){
-                if(pair.getValue1().compareTo(pair.getValue2()) > 0){
+            for (StringPair pair : entry.getValue()) {
+                if (pair.getValue1().compareTo(pair.getValue2()) > 0) {
                     Assert.fail("Infraction pair ordering incorrect");
                 }
-                if(prevStringPair.getValue1().compareTo(pair.getValue1()) > 0){
+                if (prevStringPair.getValue1().compareTo(pair.getValue1()) > 0) {
                     Assert.fail("Infraction pair set ordering incorrect");
                 }
                 prevStringPair = pair;

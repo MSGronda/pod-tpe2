@@ -2,6 +2,7 @@ package ar.edu.itba.pod.query1;
 
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
+
 @SuppressWarnings("deprecation")
 public class TotalInfractionsReducer implements ReducerFactory<String, Integer, Integer> {
     @Override
@@ -9,7 +10,7 @@ public class TotalInfractionsReducer implements ReducerFactory<String, Integer, 
         return new InfractionReducer();
     }
 
-    private static class InfractionReducer extends Reducer<Integer, Integer>{
+    private static class InfractionReducer extends Reducer<Integer, Integer> {
         private int sum;
 
         @Override

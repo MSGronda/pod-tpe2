@@ -4,7 +4,10 @@ import ar.edu.itba.pod.models.StringPair;
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public class GroupingByFineReducer implements ReducerFactory<Integer, String, List<StringPair>> {
@@ -16,6 +19,7 @@ public class GroupingByFineReducer implements ReducerFactory<Integer, String, Li
 
     private static class GroupReducer extends Reducer<String, List<StringPair>> {
         private Set<String> infractionNames;
+
         @Override
         public void beginReduce() {
             infractionNames = new HashSet<>();
@@ -32,8 +36,8 @@ public class GroupingByFineReducer implements ReducerFactory<Integer, String, Li
 
             Object[] infractions = infractionNames.toArray();
 
-            for(int i=0; i<infractions.length; i++){
-                for(int j=0; j<i; j++){
+            for (int i = 0; i < infractions.length; i++) {
+                for (int j = 0; j < i; j++) {
                     resp.add(new StringPair((String) infractions[i], (String) infractions[j]));     // TODO: check el casteo
                 }
             }

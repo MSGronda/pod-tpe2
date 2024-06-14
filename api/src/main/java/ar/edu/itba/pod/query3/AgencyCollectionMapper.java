@@ -5,7 +5,7 @@ import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
 @SuppressWarnings("deprecation")
-public class AgencyCollectionMapper implements Mapper<Long, Ticket, String, Long>{
+public class AgencyCollectionMapper implements Mapper<Long, Ticket, String, Long> {
 
     public AgencyCollectionMapper() {
     }

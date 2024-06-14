@@ -15,16 +15,20 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static ar.edu.itba.pod.utils.Common.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("deprecation")
 @RunWith(MockitoJUnitRunner.class)
 public class Query1Test {
-    private static final List<Integer> ONES = List.of(1,1,1,1,1,1);
+    private static final List<Integer> ONES = List.of(1, 1, 1, 1, 1, 1);
     private static final Map<String, Integer> INFRACTION_COUNT_MAP = Map.of(
             VIOLATION_CODES.get(0), 5,
             VIOLATION_CODES.get(1), 34,
@@ -37,14 +41,16 @@ public class Query1Test {
     private static class TotalInfractionsContext implements Context<String, Integer> {
         private String s;
         private int i;
+
         @Override
         public void emit(String s, Integer i) {
             this.s = s;
             this.i = i;
         }
     }
+
     @Test
-    public void TotalInfractionsMapperTest(){
+    public void TotalInfractionsMapperTest() {
         TotalInfractionsMapper mapper = new TotalInfractionsMapper();
         TotalInfractionsContext context = new TotalInfractionsContext();
 
@@ -55,7 +61,7 @@ public class Query1Test {
     }
 
     @Test
-    public void TotalInfractionsReducerTest(){
+    public void TotalInfractionsReducerTest() {
         Reducer<Integer, Integer> reducer = new TotalInfractionsReducer().newReducer(VIOLATION_CODE);
 
         reducer.beginReduce();
@@ -65,7 +71,7 @@ public class Query1Test {
     }
 
     @Test
-    public void TotalInfractionsCollatorTest(){
+    public void TotalInfractionsCollatorTest() {
         when(hazelcastInstance.getMap(Constants.INFRACTION_MAP)).thenReturn(VIOLATION_CODE_DESC_MAP);
 
         Collator<Map.Entry<String, Integer>, Set<Map.Entry<String, Integer>>> collator = new TotalInfractionsCollator(hazelcastInstance);
@@ -80,11 +86,11 @@ public class Query1Test {
         Integer prevInt = output.iterator().next().getValue();
         String prevString = output.iterator().next().getKey();
 
-        for(Map.Entry<String, Integer> entry : output){
-            if(prevInt < entry.getValue()){
+        for (Map.Entry<String, Integer> entry : output) {
+            if (prevInt < entry.getValue()) {
                 Assert.fail("Infraction count ordering incorrect");
             }
-            if(prevInt.equals(entry.getValue()) && prevString.compareTo(entry.getKey()) > 0){
+            if (prevInt.equals(entry.getValue()) && prevString.compareTo(entry.getKey()) > 0) {
                 Assert.fail("Infraction name ordering incorrect");
             }
             prevInt = entry.getValue();

@@ -17,8 +17,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Map;
 
-import static ar.edu.itba.pod.utils.Common.*;
-import static org.junit.Assert.*;
+import static ar.edu.itba.pod.utils.Common.VIOLATION_CODES;
+import static ar.edu.itba.pod.utils.Common.VIOLATION_CODE_DESC_MAP;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("deprecation")
@@ -40,7 +41,7 @@ public class Query2Test {
 
     private static final Map<String, List<String>> DESCRIPTION_MAP = Map.of(
             counties.get(0), List.of("Drunk driving", "Driving without sunglasses", "-"),
-            counties.get(1), List.of("Drunk driving", "Driving without sunglasses","Parked 10 feet from the curve"),
+            counties.get(1), List.of("Drunk driving", "Driving without sunglasses", "Parked 10 feet from the curve"),
             counties.get(2), List.of("Drunk driving", "-", "-")
     );
 
@@ -71,7 +72,7 @@ public class Query2Test {
     }
 
     @Test
-    public void topInfractionsReducerTest(){
+    public void topInfractionsReducerTest() {
         Reducer<String, List<String>> reducer = new TopInfractionsReducer().newReducer(counties.get(0));
 
         reducer.beginReduce();
@@ -81,7 +82,7 @@ public class Query2Test {
     }
 
     @Test
-    public void topInfractionsCollatorTest(){
+    public void topInfractionsCollatorTest() {
         when(hazelcastInstance.getMap(Constants.INFRACTION_MAP)).thenReturn(VIOLATION_CODE_DESC_MAP);
 
         Collator<Map.Entry<String, List<String>>, Map<String, List<String>>> collator = new TopInfractionsCollator(hazelcastInstance);

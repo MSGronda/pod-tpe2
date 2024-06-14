@@ -5,7 +5,7 @@ import com.hazelcast.mapreduce.Mapper;
 
 @SuppressWarnings("deprecation")
 public class GroupingByFineMapper implements Mapper<String, Float, Integer, String> {
-    public GroupingByFineMapper(){
+    public GroupingByFineMapper() {
         // Necessary for hazelcast
     }
 
@@ -13,7 +13,7 @@ public class GroupingByFineMapper implements Mapper<String, Float, Integer, Stri
     public void map(String infractionName, Float fineAverage, Context<Integer, String> context) {
         int group = ((int) Math.floor(fineAverage / 100)) * 100;
 
-        if (group > 0){
+        if (group > 0) {
             context.emit(group, infractionName);
         }
     }

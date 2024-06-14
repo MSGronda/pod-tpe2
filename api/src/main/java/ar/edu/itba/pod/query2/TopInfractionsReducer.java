@@ -6,7 +6,6 @@ import com.hazelcast.mapreduce.ReducerFactory;
 import java.util.*;
 
 
-
 @SuppressWarnings("deprecation")
 public class TopInfractionsReducer implements ReducerFactory<String, String, List<String>> {
 

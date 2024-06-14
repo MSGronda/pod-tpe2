@@ -39,7 +39,7 @@ public class DatasetHelper {
             Query query,
             TicketCreator ticketCreator,
             DateTimeFormatter dateFormatter
-    ){
+    ) {
         // Lo usamos para filtrar los tickets que no tienen infraction asociado.
         // Usamos una coleccion local para no tener que acceder al IMap del cluster (lo
         // cual lo haria muy lento). Considerando que el localInfractions y infractions IMap
@@ -50,7 +50,9 @@ public class DatasetHelper {
         sequentialReader.readCsv(infractionsPath, line -> {
             String[] fields = line.split(";");
 
-            if(fields.length != NUM_FIELDS_INFRACTION){ return; }
+            if (fields.length != NUM_FIELDS_INFRACTION) {
+                return;
+            }
 
             localInfractions.put(fields[0], infractionCreator.createInfraction(fields));
         });
@@ -84,25 +86,27 @@ public class DatasetHelper {
 
     }
 
-    public interface InfractionCreator{
+    public interface InfractionCreator {
         Infraction createInfraction(String[] fields);
     }
+
     public static final InfractionCreator nycInfractionCreator = (fields) -> new InfractionNYC(Integer.parseInt(fields[0]), fields[1]);
     public static final InfractionCreator chiInfractionCreator = (fields) -> new InfractionCHI(fields[0], fields[1]);
 
 
-    public interface TicketCreator{
+    public interface TicketCreator {
         Ticket createTicket(String[] fields, Query query, DateTimeFormatter dateFormatter);
     }
+
     public static final TicketCreator nycTicketCreator = (fields, query, dateFormatter) ->
             query.getNYCTicket(
-                fields[0],
-                LocalDate.parse(fields[1], dateFormatter),
-                Integer.parseInt(fields[2]),
-                Float.parseFloat(fields[3]),
-                fields[4],
-                fields[5]
-    );
+                    fields[0],
+                    LocalDate.parse(fields[1], dateFormatter),
+                    Integer.parseInt(fields[2]),
+                    Float.parseFloat(fields[3]),
+                    fields[4],
+                    fields[5]
+            );
 
     public static final TicketCreator chiTicketCreator = (fields, query, dateFormatter) ->
             query.getCHITicket(
@@ -112,13 +116,14 @@ public class DatasetHelper {
                     fields[3],
                     Integer.parseInt(fields[4]),
                     fields[5]
-    );
+            );
 
     private interface CsvReader {
         void readCsv(Path filepath, Consumer<String> consumer);
     }
+
     private static final CsvReader sequentialReader = (filepath, consumer) -> {
-        try (Stream<String> reader = Files.lines(filepath) ){
+        try (Stream<String> reader = Files.lines(filepath)) {
             reader.skip(SKIP_CSV_LINES).forEach(consumer);
         } catch (IOException e) {
             logger.error("Error reading file", e);

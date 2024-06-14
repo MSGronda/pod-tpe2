@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class DummyIMap<k,v> implements IMap<k,v> {
+public class DummyIMap<k, v> implements IMap<k, v> {
 
     private Map<k, v> map = new HashMap<>();
 

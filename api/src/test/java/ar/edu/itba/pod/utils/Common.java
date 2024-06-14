@@ -10,7 +10,8 @@ public class Common {
     public static final List<String> VIOLATION_CODES = List.of("awsh", "213i4", "3i492");
     public static final List<String> VIOLATION_DESCRIPTIONS = List.of("Drunk driving", "Driving without sunglasses", "Parked 10 feet from the curve");
     public static final IMap<Object, Object> VIOLATION_CODE_DESC_MAP = setupViolationCodeDescMap();
-    private static IMap<Object, Object> setupViolationCodeDescMap(){
+
+    private static IMap<Object, Object> setupViolationCodeDescMap() {
         IMap<Object, Object> resp = new DummyIMap<>();
 
         resp.put(VIOLATION_CODES.get(0), new InfractionCHI(VIOLATION_CODES.get(0), VIOLATION_DESCRIPTIONS.get(0)));

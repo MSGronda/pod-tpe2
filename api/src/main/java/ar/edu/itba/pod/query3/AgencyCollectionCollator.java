@@ -10,6 +10,7 @@ public class AgencyCollectionCollator implements Collator<Map.Entry<String, Long
     private final int n;
 
     public static final Comparator<Map.Entry<String, Double>> CMP = Comparator.comparingDouble((Map.Entry<String, Double> e) -> e.getValue()).reversed().thenComparing(Map.Entry::getKey);
+
     public AgencyCollectionCollator(final int n) {
         this.n = n;
     }

@@ -1,10 +1,11 @@
 package ar.edu.itba.pod.query2;
 
-import ar.edu.itba.pod.utils.Constants;
 import ar.edu.itba.pod.models.abstractClasses.Infraction;
+import ar.edu.itba.pod.utils.Constants;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Collator;
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public class TopInfractionsCollator implements Collator<Map.Entry<String, List<S
 
     private final transient IMap<String, Infraction> infractions;
 
-    public TopInfractionsCollator(HazelcastInstance hazelcastInstance){
+    public TopInfractionsCollator(HazelcastInstance hazelcastInstance) {
         this.infractions = hazelcastInstance.getMap(Constants.INFRACTION_MAP);
     }
 
@@ -31,9 +32,9 @@ public class TopInfractionsCollator implements Collator<Map.Entry<String, List<S
 
             List<String> topInfractionsDescription = new java.util.ArrayList<>();
             for (String infractionCode : topInfractions) {
-                if (!infractionCode.equals("-") || infractions.containsKey(infractionCode)){
+                if (!infractionCode.equals("-") || infractions.containsKey(infractionCode)) {
                     topInfractionsDescription.add(infractions.get(infractionCode).getDescription());
-                }else{
+                } else {
                     topInfractionsDescription.add("-");
                 }
             }

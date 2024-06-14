@@ -13,7 +13,7 @@ public class TicketNYCQuery1 extends Ticket implements DataSerializable {
 
     private int infractionCode;
 
-    public TicketNYCQuery1(){
+    public TicketNYCQuery1() {
         // Necesario para hazelcast
     }
 

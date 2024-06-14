@@ -23,6 +23,7 @@ public class AgencyCollectionReducer implements ReducerFactory<String, Long, Lon
         public void beginReduce() {
             sum = 0;
         }
+
         @Override
         public void reduce(Long value) {
             sum += value;

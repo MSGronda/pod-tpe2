@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.client;
 
-import ar.edu.itba.pod.utils.Constants;
 import ar.edu.itba.pod.client.utils.Argument;
 import ar.edu.itba.pod.models.CHITickets.*;
 import ar.edu.itba.pod.models.NYCTickets.*;
@@ -21,6 +20,7 @@ import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyCombinerFactory;
 import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyMapper;
 import ar.edu.itba.pod.query4.PlatesMostInfractionsByCountyReducerFactory;
 import ar.edu.itba.pod.query5.*;
+import ar.edu.itba.pod.utils.Constants;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Job;
@@ -203,10 +203,10 @@ public enum Query {
                     (key, set) -> {
                         StringBuilder sb = new StringBuilder();
                         Iterator<StringPair> iterator = set.iterator();
-                        while (iterator.hasNext()){
+                        while (iterator.hasNext()) {
                             StringPair sp = iterator.next();
                             sb.append(key).append(';').append(sp.getValue1()).append(';').append(sp.getValue2());
-                            if(iterator.hasNext()){
+                            if (iterator.hasNext()) {
                                 sb.append('\n');
                             }
                         }
@@ -248,9 +248,11 @@ public enum Query {
     public abstract void realizeMapReduce(Job<Long, Ticket> job, Argument arguments, HazelcastInstance hzInstance) throws ExecutionException, InterruptedException, IOException;
 
     public abstract Ticket getCHITicket(LocalDateTime issueDate, String licensePlateNumber, String violationCode, String unitDescription, int fine, String communityArea);
+
     public abstract Ticket getNYCTicket(String plate, LocalDate issueDate, int infractionCode, float fineAmount, String countyName, String issuingAgency);
 
-    public void checkQueryArguments(Argument arguments, StringBuilder errors) {}
+    public void checkQueryArguments(Argument arguments, StringBuilder errors) {
+    }
 
     private Path getFilePath(Path outPathDir) {
         return outPathDir.resolve(String.format("query%d.csv", num));

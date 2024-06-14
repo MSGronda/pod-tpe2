@@ -14,7 +14,7 @@ public class TicketCHIQuery5 extends Ticket implements DataSerializable {
 
     private int fine;
 
-    public TicketCHIQuery5(){
+    public TicketCHIQuery5() {
         // Necesario para hazelcast
     }
 

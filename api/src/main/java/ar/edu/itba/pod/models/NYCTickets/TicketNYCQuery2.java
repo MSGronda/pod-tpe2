@@ -14,7 +14,7 @@ public class TicketNYCQuery2 extends Ticket implements DataSerializable {
 
     private String countyName;
 
-    public TicketNYCQuery2(){
+    public TicketNYCQuery2() {
         // Necesario para hazelcast
     }
 

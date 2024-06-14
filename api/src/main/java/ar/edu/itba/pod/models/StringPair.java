@@ -13,11 +13,11 @@ public class StringPair implements DataSerializable {
     private String value1;
     private String value2;
 
-    public StringPair(){
+    public StringPair() {
         // Necessary for hazelcast
     }
 
-    public StringPair(String value1, String value2){
+    public StringPair(String value1, String value2) {
         this.value1 = value1;
         this.value2 = value2;
     }

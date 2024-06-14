@@ -9,7 +9,7 @@ import com.hazelcast.mapreduce.Mapper;
 public class TotalInfractionsMapper implements Mapper<Long, Ticket, String, Integer> {
     private static final Integer ONE = 1;
 
-    public TotalInfractionsMapper(){
+    public TotalInfractionsMapper() {
         // Necessary for hazelcast
     }
 

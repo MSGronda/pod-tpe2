@@ -17,7 +17,7 @@ public class TicketNYCQuery4 extends Ticket implements DataSerializable {
     private LocalDate date;
     private String countyName;
 
-    public TicketNYCQuery4(){
+    public TicketNYCQuery4() {
         // Necesario para hazelcast
     }
 

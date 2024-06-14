@@ -14,7 +14,7 @@ public class TicketCHIQuery2 extends Ticket implements DataSerializable {
 
     private String communityArea;
 
-    public TicketCHIQuery2(){
+    public TicketCHIQuery2() {
         // Necesario para hazelcast
     }
 

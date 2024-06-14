@@ -12,16 +12,16 @@ public enum City {
     CHI {
         @Override
         public void loadData(Argument arguments, IMap<String, Infraction> infractions, IMap<Long, Ticket> tickets) {
-                DatasetHelper.loadTicketBatched(
-                        arguments.getInPath().resolve(String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name())),
-                        infractions,
-                        DatasetHelper.chiInfractionCreator,
-                        arguments.getInPath().resolve(String.format(Constants.TICKETS_FILENAME_FMT, this.name())),
-                        tickets,
-                        arguments.getQuery(),
-                        DatasetHelper.chiTicketCreator,
-                        DatasetHelper.chiFormatter
-                );
+            DatasetHelper.loadTicketBatched(
+                    arguments.getInPath().resolve(String.format(Constants.INFRACTIONS_FILENAME_FMT, this.name())),
+                    infractions,
+                    DatasetHelper.chiInfractionCreator,
+                    arguments.getInPath().resolve(String.format(Constants.TICKETS_FILENAME_FMT, this.name())),
+                    tickets,
+                    arguments.getQuery(),
+                    DatasetHelper.chiTicketCreator,
+                    DatasetHelper.chiFormatter
+            );
         }
     }, NYC {
         @Override
