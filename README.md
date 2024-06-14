@@ -44,7 +44,7 @@ Now, we can run the server. To do this, first we must navigate to the directory 
 and then we can run the shell script used to start a Hazelcast node. This will start it, listening on the port 5701.
 
 ```shell
-cd server/target/tpe2-g11-server-1.0-SNAPSHOT && sh run-server.sh [ -Dinteface="<mask>" ] [ -Xmx="<memory>" ]
+cd server/target/tpe2-g11-server-1.0-SNAPSHOT && sh run-server.sh [ -Dinterface="<mask>" ] [ -Xmx="<memory>" ]
 ```
 
 Where:
